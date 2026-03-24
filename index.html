@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuoGerman - 德文單字特訓</title>
+    <style>
+        :root {
+            --duo-green: #58cc02;
+            --duo-green-dark: #46a302;
+            --duo-red: #ff4b4b;
+            --duo-red-dark: #d42a2a;
+            --duo-blue: #1cb0f6;
+            --duo-blue-dark: #1480b3;
+            --duo-gray: #e5e5e5;
+            --duo-text: #4b4b4b;
+            --bg: #fff;
+        }
+
+        body {
+            font-family: "Nunito", "Segoe UI", "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg);
+            color: var(--duo-text);
+            overflow: hidden;
+        }
+
+        /* 介面切換控制 */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* 選單畫面樣式 */
+        .menu-content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .vocab-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .vocab-item {
+            padding: 20px;
+            border: 2px solid var(--duo-gray);
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .vocab-item:hover {
+            background-color: #f7f7f7;
+            border-color: var(--duo-blue);
+        }
+
+        /* 遊戲畫面樣式 (保留原設計) */
+        .header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-sizing: border-box;
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            height: 16px;
+            background-color: var(--duo-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--duo-green);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .game-area {
+            flex-grow: 1;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 100px;
+        }
+
+        .word-display {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #e5e5e5;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 400px) {
+            .options-grid.articles {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid var(--duo-gray);
+            border-bottom-width: 4px;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .option-btn.correct {
+            background-color: #d7ffb8;
+            border-color: var(--duo-green);
+            color: var(--duo-green-dark);
+        }
+
+        .option-btn.wrong {
+            background-color: #ffdfe0;
+            border-color: var(--duo-red);
+            color: var(--duo-red-dark);
+        }
+
+        /* 回饋面板 */
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .bottom-sheet.show {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet.correct {
+            background-color: #d7ffb8;
+            color: var(--duo-green-dark);
+        }
+
+        .bottom-sheet.wrong {
+            background-color: #ffdfe0;
+            color: var(--duo-red-dark);
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .bottom-sheet.correct .next-btn {
+            background-color: var(--duo-green);
+        }
+
+        .bottom-sheet.wrong .next-btn {
+            background-color: var(--duo-red);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="menu-screen" class="screen active">
+        <div class="menu-content">
+            <h1>Willkommen!</h1>
+            <p>請選擇一個單詞本開始練習：</p>
+            <div id="vocab-list" class="vocab-list">
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="header">
+            <div style="cursor:pointer" onclick="showMenu()">❮</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div id="lives" style="font-weight:bold; color:var(--duo-red);">❤ 5</div>
+        </div>
+        <div class="game-area" id="game-area"></div>
+    </div>
+
+    <div class="bottom-sheet" id="bottom-sheet">
+        <div id="feedback-msg" style="font-weight:bold; font-size:1.2rem;"></div>
+        <div id="feedback-detail" style="margin: 5px 0 15px 0;"></div>
+        <button class="next-btn" onclick="nextQuestion()">繼續</button>
+    </div>
+
+    <script>
+        // --- 配置：請在這裡列出你的 .txt 檔案名稱 ---
+        const vocabFiles = [
+            { name: "第一單元", file: "Unit1.txt" },
+            { name: "第二單元", file: "Unit2.txt" },
+            { name: "食物與飲料", file: "Food.txt" }
+        ];
+
+        let vocabData = [];
+        let currentQIndex = 0;
+        let isAnswered = false;
+
+        // 初始化選單
+        function initMenu() {
+            const listContainer = document.getElementById('vocab-list');
+            vocabFiles.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'vocab-item';
+                div.textContent = item.name;
+                div.onclick = () => loadVocabFile(item.file);
+                listContainer.appendChild(div);
+            });
+        }
+
+        // 從伺服器讀取文字檔並解析
+        async function loadVocabFile(fileName) {
+            try {
+                const response = await fetch(`./voc/${fileName}`);
+                if (!response.ok) throw new Error('無法讀取檔案');
+                const text = await response.text();
+
+                // 解析格式: (der/die/das) 德文 中文
+                vocabData = text.split('\n')
+                    .filter(line => line.trim() !== '')
+                    .map(line => {
+                        const parts = line.trim().split(/\s+/);
+                        if (['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
+                            return { art: parts[0].toLowerCase(), de: parts[1], cn: parts.slice(2).join(' '), type: 'noun' };
+                        } else {
+                            return { de: parts[0], cn: parts.slice(1).join(' '), type: 'other' };
+                        }
+                    });
+
+                startGame();
+            } catch (err) {
+                alert("讀取失敗，請檢查 voc/ 資料夾下是否有 " + fileName);
+            }
+        }
+
+        function startGame() {
+            vocabData.sort(() => Math.random() - 0.5);
+            currentQIndex = 0;
+            document.getElementById('menu-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            loadQuestion();
+        }
+
+        function showMenu() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('menu-screen').classList.add('active');
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            document.getElementById('bottom-sheet').classList.remove('show');
+            const item = vocabData[currentQIndex];
+            const progress = (currentQIndex / vocabData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            const gameArea = document.getElementById('game-area');
+            gameArea.innerHTML = '';
+
+            // 隨機決定題型：0為冠詞題(限名詞)，1為翻譯題
+            let qType = (item.type === 'noun' && Math.random() > 0.5) ? 0 : 1;
+
+            const h2 = document.createElement('h2');
+            h2.textContent = qType === 0 ? "請選擇正確的冠詞" : "這句話的意思是？";
+            gameArea.appendChild(h2);
+
+            const wordDisplay = document.createElement('div');
+            wordDisplay.className = 'word-display';
+            wordDisplay.textContent = item.de;
+            gameArea.appendChild(wordDisplay);
+
+            const grid = document.createElement('div');
+            grid.className = 'options-grid ' + (qType === 0 ? 'articles' : '');
+
+            if (qType === 0) {
+                ['der', 'die', 'das'].forEach(art => {
+                    const btn = createOptionBtn(art, art === item.art, item);
+                    grid.appendChild(btn);
+                });
+            } else {
+                let options = [{ text: item.cn, correct: true }];
+                const distractors = vocabData.filter(v => v.cn !== item.cn);
+                distractors.sort(() => Math.random() - 0.5).slice(0, 3).forEach(d => {
+                    options.push({ text: d.cn, correct: false });
+                });
+                options.sort(() => Math.random() - 0.5).forEach(opt => {
+                    grid.appendChild(createOptionBtn(opt.text, opt.correct, item));
+                });
+            }
+            gameArea.appendChild(grid);
+        }
+
+        function createOptionBtn(text, isCorrect, item) {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = text;
+            btn.onclick = () => {
+                if (isAnswered) return;
+                isAnswered = true;
+                const sheet = document.getElementById('bottom-sheet');
+                if (isCorrect) {
+                    btn.classList.add('correct');
+                    sheet.className = 'bottom-sheet show correct';
+                    document.getElementById('feedback-msg').textContent = "太棒了！";
+                } else {
+                    btn.classList.add('wrong');
+                    sheet.className = 'bottom-sheet show wrong';
+                    document.getElementById('feedback-msg').textContent = "再接再厲！";
+                }
+                document.getElementById('feedback-detail').textContent =
+                    `${item.art ? item.art + ' ' : ''}${item.de} = ${item.cn}`;
+            };
+            return btn;
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex >= vocabData.length) {
+                alert("恭喜完成本單元！");
+                showMenu();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        initMenu();
+    </script>
+</body>
+
+</html>
