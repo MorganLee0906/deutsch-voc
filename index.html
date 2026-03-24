@@ -228,11 +228,30 @@
 
     <script>
         // --- 配置：請在這裡列出你的 .txt 檔案名稱 ---
-        const vocabFiles = [
-            { name: "第一單元", file: "Unit1.txt" },
-            { name: "第二單元", file: "Unit2.txt" },
-            { name: "食物與飲料", file: "Food.txt" }
-        ];
+        async function initMenu() {
+            const listContainer = document.getElementById('vocab-list');
+            listContainer.innerHTML = "載入中..."; // 讀取時顯示提示
+
+            try {
+                // 抓取剛才建立的 JSON 清單
+                const response = await fetch('./voc/list.json');
+                if (!response.ok) throw new Error('找不到清單檔');
+
+                const vocabFiles = await response.json();
+                listContainer.innerHTML = ""; // 清空提示
+
+                vocabFiles.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'vocab-item';
+                    div.textContent = item.name;
+                    div.onclick = () => loadVocabFile(item.file);
+                    listContainer.appendChild(div);
+                });
+            } catch (err) {
+                listContainer.innerHTML = "無法載入單詞本清單，請確認 voc/list.json 是否正確。";
+                console.error(err);
+            }
+        }
 
         let vocabData = [];
         let currentQIndex = 0;
