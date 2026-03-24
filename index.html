@@ -227,18 +227,23 @@
     </div>
 
     <script>
-        // --- 配置：請在這裡列出你的 .txt 檔案名稱 ---
+        // 全域變數定義
+        let vocabData = [];
+        let currentQIndex = 0;
+        let isAnswered = false;
+
+        // --- 1. 初始化選單：從 JSON 抓取清單 ---
         async function initMenu() {
             const listContainer = document.getElementById('vocab-list');
-            listContainer.innerHTML = "載入中..."; // 讀取時顯示提示
+            listContainer.innerHTML = "載入中...";
 
             try {
-                // 抓取剛才建立的 JSON 清單
+                // 抓取 voc 目錄下的 list.json
                 const response = await fetch('./voc/list.json');
-                if (!response.ok) throw new Error('找不到清單檔');
+                if (!response.ok) throw new Error('找不到 voc/list.json 檔案');
 
                 const vocabFiles = await response.json();
-                listContainer.innerHTML = ""; // 清空提示
+                listContainer.innerHTML = "";
 
                 vocabFiles.forEach(item => {
                     const div = document.createElement('div');
@@ -248,32 +253,16 @@
                     listContainer.appendChild(div);
                 });
             } catch (err) {
-                listContainer.innerHTML = "無法載入單詞本清單，請確認 voc/list.json 是否正確。";
-                console.error(err);
+                listContainer.innerHTML = "無法載入清單。請確認目錄下有 voc/list.json 且格式正確。";
+                console.error("錯誤詳情:", err);
             }
         }
 
-        let vocabData = [];
-        let currentQIndex = 0;
-        let isAnswered = false;
-
-        // 初始化選單
-        function initMenu() {
-            const listContainer = document.getElementById('vocab-list');
-            vocabFiles.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'vocab-item';
-                div.textContent = item.name;
-                div.onclick = () => loadVocabFile(item.file);
-                listContainer.appendChild(div);
-            });
-        }
-
-        // 從伺服器讀取文字檔並解析
+        // --- 2. 讀取單字檔 ---
         async function loadVocabFile(fileName) {
             try {
                 const response = await fetch(`./voc/${fileName}`);
-                if (!response.ok) throw new Error('無法讀取檔案');
+                if (!response.ok) throw new Error('無法讀取單字檔');
                 const text = await response.text();
 
                 // 解析格式: (der/die/das) 德文 中文
@@ -281,6 +270,7 @@
                     .filter(line => line.trim() !== '')
                     .map(line => {
                         const parts = line.trim().split(/\s+/);
+                        // 檢查是否有冠詞
                         if (['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
                             return { art: parts[0].toLowerCase(), de: parts[1], cn: parts.slice(2).join(' '), type: 'noun' };
                         } else {
@@ -290,10 +280,11 @@
 
                 startGame();
             } catch (err) {
-                alert("讀取失敗，請檢查 voc/ 資料夾下是否有 " + fileName);
+                alert("讀取失敗，請檢查檔案路徑: voc/" + fileName);
             }
         }
 
+        // --- 3. 遊戲邏輯 (其餘保持不變) ---
         function startGame() {
             vocabData.sort(() => Math.random() - 0.5);
             currentQIndex = 0;
@@ -317,11 +308,10 @@
             const gameArea = document.getElementById('game-area');
             gameArea.innerHTML = '';
 
-            // 隨機決定題型：0為冠詞題(限名詞)，1為翻譯題
             let qType = (item.type === 'noun' && Math.random() > 0.5) ? 0 : 1;
 
             const h2 = document.createElement('h2');
-            h2.textContent = qType === 0 ? "請選擇正確的冠詞" : "這句話的意思是？";
+            h2.textContent = qType === 0 ? "請選擇正確的冠詞" : "選出正確的意思";
             gameArea.appendChild(h2);
 
             const wordDisplay = document.createElement('div');
@@ -365,7 +355,7 @@
                 } else {
                     btn.classList.add('wrong');
                     sheet.className = 'bottom-sheet show wrong';
-                    document.getElementById('feedback-msg').textContent = "再接再厲！";
+                    document.getElementById('feedback-msg').textContent = "正確答案是：";
                 }
                 document.getElementById('feedback-detail').textContent =
                     `${item.art ? item.art + ' ' : ''}${item.de} = ${item.cn}`;
@@ -383,6 +373,7 @@
             }
         }
 
+        // 啟動程式
         initMenu();
     </script>
 </body>
