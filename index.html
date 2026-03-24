@@ -31,7 +31,6 @@
             overflow: hidden;
         }
 
-        /* 介面切換控制 */
         .screen {
             display: none;
             width: 100%;
@@ -44,10 +43,11 @@
             display: flex;
         }
 
-        /* 選單畫面樣式 */
+        /* 選單與總結畫面樣式 */
         .menu-content {
             padding: 40px 20px;
             text-align: center;
+            overflow-y: auto;
         }
 
         .vocab-list {
@@ -71,7 +71,23 @@
             border-color: var(--duo-blue);
         }
 
-        /* 遊戲畫面樣式 (保留原設計) */
+        /* 錯誤清單樣式 */
+        .wrong-list {
+            text-align: left;
+            background: #fff1f1;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid #ffdfe0;
+        }
+
+        .wrong-item {
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        /* 遊戲畫面樣式 */
         .header {
             padding: 20px;
             display: flex;
@@ -148,7 +164,6 @@
             color: var(--duo-red-dark);
         }
 
-        /* 回饋面板 */
         .bottom-sheet {
             position: fixed;
             bottom: 0;
@@ -203,21 +218,30 @@
     <div id="menu-screen" class="screen active">
         <div class="menu-content">
             <h1>Willkommen!</h1>
-            <p>請選擇一個單詞本開始練習：</p>
-            <div id="vocab-list" class="vocab-list">
-            </div>
+            <p>請選擇一個單詞本：</p>
+            <div id="vocab-list" class="vocab-list"></div>
         </div>
     </div>
 
     <div id="game-screen" class="screen">
         <div class="header">
-            <div style="cursor:pointer" onclick="showMenu()">❮</div>
+            <div style="cursor:pointer; font-size: 1.5rem;" onclick="showMenu()">❮</div>
             <div class="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            <div id="lives" style="font-weight:bold; color:var(--duo-red);">❤ 5</div>
         </div>
         <div class="game-area" id="game-area"></div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div class="menu-content">
+            <h1>練習結束！</h1>
+            <div id="result-summary"></div>
+            <div id="wrong-answers-display" class="wrong-list"></div>
+            <button class="vocab-item"
+                style="width: 100%; margin-top: 20px; background: var(--duo-blue); color: white; border: none;"
+                onclick="showMenu()">返回選單</button>
+        </div>
     </div>
 
     <div class="bottom-sheet" id="bottom-sheet">
@@ -227,24 +251,19 @@
     </div>
 
     <script>
-        // 全域變數定義
         let vocabData = [];
+        let wrongAnswers = []; // 用來儲存寫錯的題目
         let currentQIndex = 0;
         let isAnswered = false;
 
-        // --- 1. 初始化選單：從 JSON 抓取清單 ---
         async function initMenu() {
             const listContainer = document.getElementById('vocab-list');
             listContainer.innerHTML = "載入中...";
-
             try {
-                // 抓取 voc 目錄下的 list.json
                 const response = await fetch('./voc/list.json');
-                if (!response.ok) throw new Error('找不到 voc/list.json 檔案');
-
+                if (!response.ok) throw new Error();
                 const vocabFiles = await response.json();
                 listContainer.innerHTML = "";
-
                 vocabFiles.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'vocab-item';
@@ -253,61 +272,48 @@
                     listContainer.appendChild(div);
                 });
             } catch (err) {
-                listContainer.innerHTML = "無法載入清單。請確認目錄下有 voc/list.json 且格式正確。";
-                console.error("錯誤詳情:", err);
+                listContainer.innerHTML = "無法載入清單，請確認 voc/list.json。";
             }
         }
 
-        // --- 2. 讀取單字檔 ---
         async function loadVocabFile(fileName) {
             try {
                 const response = await fetch(`./voc/${fileName}`);
-                if (!response.ok) throw new Error('無法讀取單字檔');
                 const text = await response.text();
-
-                // 解析格式: (der/die/das) 德文 中文
-                vocabData = text.split('\n')
-                    .filter(line => line.trim() !== '')
-                    .map(line => {
-                        const parts = line.trim().split(/\s+/);
-                        // 檢查是否有冠詞
-                        if (['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
-                            return { art: parts[0].toLowerCase(), de: parts[1], cn: parts.slice(2).join(' '), type: 'noun' };
-                        } else {
-                            return { de: parts[0], cn: parts.slice(1).join(' '), type: 'other' };
-                        }
-                    });
-
+                vocabData = text.split('\n').filter(line => line.trim() !== '').map(line => {
+                    const parts = line.trim().split(/\s+/);
+                    if (['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
+                        return { art: parts[0].toLowerCase(), de: parts[1], cn: parts.slice(2).join(' '), type: 'noun' };
+                    }
+                    return { de: parts[0], cn: parts.slice(1).join(' '), type: 'other' };
+                });
                 startGame();
-            } catch (err) {
-                alert("讀取失敗，請檢查檔案路徑: voc/" + fileName);
-            }
+            } catch (err) { alert("讀取失敗！"); }
         }
 
-        // --- 3. 遊戲邏輯 (其餘保持不變) ---
         function startGame() {
             vocabData.sort(() => Math.random() - 0.5);
             currentQIndex = 0;
-            document.getElementById('menu-screen').classList.remove('active');
-            document.getElementById('game-screen').classList.add('active');
+            wrongAnswers = []; // 重置錯誤清單
+            switchScreen('game-screen');
             loadQuestion();
         }
 
-        function showMenu() {
-            document.getElementById('game-screen').classList.remove('active');
-            document.getElementById('menu-screen').classList.add('active');
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
+
+        function showMenu() { switchScreen('menu-screen'); }
 
         function loadQuestion() {
             isAnswered = false;
             document.getElementById('bottom-sheet').classList.remove('show');
             const item = vocabData[currentQIndex];
-            const progress = (currentQIndex / vocabData.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-bar').style.width = `${(currentQIndex / vocabData.length) * 100}%`;
 
             const gameArea = document.getElementById('game-area');
             gameArea.innerHTML = '';
-
             let qType = (item.type === 'noun' && Math.random() > 0.5) ? 0 : 1;
 
             const h2 = document.createElement('h2');
@@ -323,19 +329,11 @@
             grid.className = 'options-grid ' + (qType === 0 ? 'articles' : '');
 
             if (qType === 0) {
-                ['der', 'die', 'das'].forEach(art => {
-                    const btn = createOptionBtn(art, art === item.art, item);
-                    grid.appendChild(btn);
-                });
+                ['der', 'die', 'das'].forEach(art => grid.appendChild(createOptionBtn(art, art === item.art, item)));
             } else {
-                let options = [{ text: item.cn, correct: true }];
-                const distractors = vocabData.filter(v => v.cn !== item.cn);
-                distractors.sort(() => Math.random() - 0.5).slice(0, 3).forEach(d => {
-                    options.push({ text: d.cn, correct: false });
-                });
-                options.sort(() => Math.random() - 0.5).forEach(opt => {
-                    grid.appendChild(createOptionBtn(opt.text, opt.correct, item));
-                });
+                let opts = [{ text: item.cn, correct: true }];
+                vocabData.filter(v => v.cn !== item.cn).sort(() => Math.random() - 0.5).slice(0, 3).forEach(d => opts.push({ text: d.cn, correct: false }));
+                opts.sort(() => Math.random() - 0.5).forEach(o => grid.appendChild(createOptionBtn(o.text, o.correct, item)));
             }
             gameArea.appendChild(grid);
         }
@@ -356,9 +354,10 @@
                     btn.classList.add('wrong');
                     sheet.className = 'bottom-sheet show wrong';
                     document.getElementById('feedback-msg').textContent = "正確答案是：";
+                    // 紀錄錯誤題目
+                    if (!wrongAnswers.find(w => w.de === item.de)) wrongAnswers.push(item);
                 }
-                document.getElementById('feedback-detail').textContent =
-                    `${item.art ? item.art + ' ' : ''}${item.de} = ${item.cn}`;
+                document.getElementById('feedback-detail').textContent = `${item.art ? item.art + ' ' : ''}${item.de} = ${item.cn}`;
             };
             return btn;
         }
@@ -366,14 +365,31 @@
         function nextQuestion() {
             currentQIndex++;
             if (currentQIndex >= vocabData.length) {
-                alert("恭喜完成本單元！");
-                showMenu();
+                showResults();
             } else {
                 loadQuestion();
             }
         }
 
-        // 啟動程式
+        function showResults() {
+            switchScreen('result-screen');
+            const summary = document.getElementById('result-summary');
+            const wrongDisplay = document.getElementById('wrong-answers-display');
+
+            summary.innerHTML = `本次練習共 ${vocabData.length} 題，寫錯 ${wrongAnswers.length} 題。`;
+
+            if (wrongAnswers.length > 0) {
+                wrongDisplay.style.display = 'block';
+                wrongDisplay.innerHTML = "<strong>需要再複習的單字：</strong><br><br>";
+                wrongAnswers.forEach(w => {
+                    wrongDisplay.innerHTML += `<div class="wrong-item">${w.art ? w.art + ' ' : ''}<strong>${w.de}</strong> : ${w.cn}</div>`;
+                });
+            } else {
+                wrongDisplay.style.display = 'none';
+                summary.innerHTML += "<br>🎉 全對！太強了！";
+            }
+        }
+
         initMenu();
     </script>
 </body>
