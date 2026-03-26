@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuoGerman - 德文單字特訓 (TSV版)</title>
+    <title>DuoGerman - 德文單字特訓</title>
     <style>
         :root {
             --duo-green: #58cc02;
@@ -19,7 +19,7 @@
         }
 
         body {
-            font-family: "Nunito", sans-serif;
+            font-family: "Nunito", "Segoe UI", "Microsoft JhengHei", sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -147,6 +147,7 @@
             padding: 15px;
             font-size: 1.1rem;
             cursor: pointer;
+            border-style: solid;
         }
 
         .option-btn.correct {
@@ -215,7 +216,7 @@
     <div id="menu-screen" class="screen active">
         <div class="menu-content">
             <h1>Willkommen!</h1>
-            <p>請選擇單詞本 (TSV格式)：</p>
+            <p>請選擇單詞本開始練習：</p>
             <div id="vocab-list" class="vocab-list"></div>
         </div>
     </div>
@@ -253,7 +254,7 @@
         let currentQIndex = 0;
         let isAnswered = false;
 
-        // --- TTS 語音功能 ---
+        // --- TTS 語音 ---
         function speak(text) {
             if (!window.speechSynthesis) return;
             window.speechSynthesis.cancel();
@@ -263,11 +264,13 @@
             window.speechSynthesis.speak(msg);
         }
 
+        // --- 初始化選單 ---
         async function initMenu() {
             const listContainer = document.getElementById('vocab-list');
             listContainer.innerHTML = "載入中...";
             try {
                 const response = await fetch('./voc/list.json');
+                if (!response.ok) throw new Error();
                 const vocabFiles = await response.json();
                 listContainer.innerHTML = "";
                 vocabFiles.forEach(item => {
@@ -278,53 +281,38 @@
                     listContainer.appendChild(div);
                 });
             } catch (err) {
-                listContainer.innerHTML = "找不到 voc/list.json。";
+                listContainer.innerHTML = "無法載入清單。請確認 voc/list.json 格式正確且存在。";
             }
         }
 
+        // --- 讀取單字檔 (支援清理雜訊與 TSV) ---
         async function loadVocabFile(fileName) {
             try {
                 const response = await fetch(`./voc/${fileName}`);
                 if (!response.ok) throw new Error();
                 let text = await response.text();
 
-                // 1. 清理雜訊：移除檔案中任何 的標記
+                // 移除 標記
                 text = text.replace(/\/g, '');
 
                 vocabData = text.split('\n')
                     .filter(line => line.trim() !== '')
                     .map(line => {
-                        // 使用 Tab 分隔並清理前後空白
                         const parts = line.split('\t').map(p => p.trim()).filter(p => p !== '');
-
-                        // 2. 判定是否為名詞 (支援 der, die, das 以及 L6 出現的 der/die)
-                        const isNoun = parts.length >= 3 &&
-                            /^(der|die|das|der\/die)$/i.test(parts[0]);
+                        // 識別名詞 (支援 der, die, das, der/die)
+                        const isNoun = parts.length >= 3 && /^(der|die|das|der\/die)$/i.test(parts[0]);
 
                         if (isNoun) {
-                            return {
-                                art: parts[0].toLowerCase(),
-                                de: parts[1],
-                                cn: parts[2],
-                                type: 'noun'
-                            };
+                            return { art: parts[0].toLowerCase(), de: parts[1], cn: parts[2], type: 'noun' };
                         } else if (parts.length >= 2) {
-                            // 一般單字或片語
-                            return {
-                                de: parts[0],
-                                cn: parts[1],
-                                type: 'other'
-                            };
+                            return { de: parts[0], cn: parts[1], type: 'other' };
                         }
                         return null;
                     }).filter(item => item !== null);
 
-                if (vocabData.length === 0) throw new Error("無效的檔案格式");
+                if (vocabData.length === 0) throw new Error();
                 startGame();
-            } catch (err) {
-                console.error("解析錯誤:", err);
-                alert("讀取失敗！請檢查檔案格式是否正確。");
-            }
+            } catch (err) { alert("讀取失敗，請檢查檔案格式！"); }
         }
 
         function startGame() {
@@ -369,7 +357,8 @@
                 ['der', 'die', 'das'].forEach(art => grid.appendChild(createOptionBtn(art, art === item.art, item)));
             } else {
                 let opts = [{ text: item.cn, correct: true }];
-                vocabData.filter(v => v.cn !== item.cn).sort(() => Math.random() - 0.5).slice(0, 3).forEach(d => opts.push({ text: d.cn, correct: false }));
+                const distractors = vocabData.filter(v => v.cn !== item.cn);
+                distractors.sort(() => Math.random() - 0.5).slice(0, 3).forEach(d => opts.push({ text: d.cn, correct: false }));
                 opts.sort(() => Math.random() - 0.5).forEach(o => grid.appendChild(createOptionBtn(o.text, o.correct, item)));
             }
             gameArea.appendChild(grid);
@@ -414,13 +403,13 @@
             summary.innerHTML = `本次練習共 ${vocabData.length} 題，寫錯 ${wrongAnswers.length} 題。`;
             if (wrongAnswers.length > 0) {
                 wrongDisplay.style.display = 'block';
-                wrongDisplay.innerHTML = "<strong>錯題清單：</strong><br><br>";
+                wrongDisplay.innerHTML = "<strong>需複習單字：</strong><br><br>";
                 wrongAnswers.forEach(w => {
                     wrongDisplay.innerHTML += `<div class="wrong-item">${w.art ? w.art + ' ' : ''}<strong>${w.de}</strong> : ${w.cn}</div>`;
                 });
             } else {
                 wrongDisplay.style.display = 'none';
-                summary.innerHTML += "<br>🎉 完美達成！";
+                summary.innerHTML += "<br>🎉 全對！祝你在復旦大學生活順利！";
             }
         }
 
