@@ -285,25 +285,43 @@
         async function loadVocabFile(fileName) {
             try {
                 const response = await fetch(`./voc/${fileName}`);
-                const text = await response.text();
+                if (!response.ok) throw new Error();
+                let text = await response.text();
+
+                // 1. 強力清理：移除所有 標記
+                text = text.replace(/\/g, '');
 
                 vocabData = text.split('\n')
                     .filter(line => line.trim() !== '')
                     .map(line => {
-                        // 改用 Tab 分隔
-                        const parts = line.split('\t').map(p => p.trim());
+                        const parts = line.split('\t').map(p => p.trim()).filter(p => p !== '');
 
-                        // 判斷邏輯：
-                        // 若有三個部分且第一部分是冠詞 -> 名詞
-                        // 若有兩個部分 -> 一般單字/片語
-                        if (parts.length >= 3 && ['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
-                            return { art: parts[0].toLowerCase(), de: parts[1], cn: parts[2], type: 'noun' };
+                        // 2. 處理名詞：檢查第一個部分是否包含冠詞
+                        // 支援單一冠詞 (der) 或複合冠詞 (der/die)
+                        const isNoun = parts.length >= 3 &&
+                            /^(der|die|das|der\/die)$/i.test(parts[0]);
+
+                        if (isNoun) {
+                            return {
+                                art: parts[0].toLowerCase(),
+                                de: parts[1],
+                                cn: parts[2],
+                                type: 'noun'
+                            };
                         } else {
-                            return { de: parts[0], cn: parts[1], type: 'other' };
+                            return {
+                                de: parts[0],
+                                cn: parts[1],
+                                type: 'other'
+                            };
                         }
-                    });
+                    }).filter(item => item.de && item.cn); // 確保資料完整
+
                 startGame();
-            } catch (err) { alert("檔案讀取失敗，請確認是否為 Tab 分隔格式。"); }
+            } catch (err) {
+                console.error(err);
+                alert("讀取失敗，請確認檔案格式！");
+            }
         }
 
         function startGame() {

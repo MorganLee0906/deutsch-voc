@@ -46,4 +46,3 @@ die	Lösung	答案/解答
 heiraten	結婚
 ledig	單身
 tot	死了
-	
