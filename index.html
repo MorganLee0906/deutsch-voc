@@ -292,14 +292,16 @@
                 if (!response.ok) throw new Error();
                 let text = await response.text();
 
-                // 移除 標記
-                text = text.replace(/\/g, '');
+                // 正確的清理邏輯：移除 
+                text = text.replace(/\\/g, '');
 
                 vocabData = text.split('\n')
                     .filter(line => line.trim() !== '')
                     .map(line => {
+                        // 必須使用真正的 Tab 分割
                         const parts = line.split('\t').map(p => p.trim()).filter(p => p !== '');
-                        // 識別名詞 (支援 der, die, das, der/die)
+
+                        // 支援名詞判斷 (包含 L6 出現的 der/die)
                         const isNoun = parts.length >= 3 && /^(der|die|das|der\/die)$/i.test(parts[0]);
 
                         if (isNoun) {
@@ -310,9 +312,12 @@
                         return null;
                     }).filter(item => item !== null);
 
-                if (vocabData.length === 0) throw new Error();
+                if (vocabData.length === 0) throw new Error("解析失敗");
                 startGame();
-            } catch (err) { alert("讀取失敗，請檢查檔案格式！"); }
+            } catch (err) {
+                console.error(err);
+                alert("讀取失敗！請確保檔案中德文與中文之間是用 Tab 分隔。");
+            }
         }
 
         function startGame() {
