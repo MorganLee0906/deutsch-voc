@@ -1,18 +1,18 @@
-das    Menü    菜單
-der    Laut    (語)音
-der    Laden    (商)店
-bekommen    得到
-Ct    分(貨幣單位)
-das    Geld    錢
-das    Problem    問題
-zu viel    太多
-zu wenig    太少
-am Stück    整塊(不必切片)
-dahaben    這裡有(賣)
-die    Kundin    女顧客
-drankommen    (照順序)輪到(某人)
-etwas    一些
-geben    給
-in Scheiben    (切成)一片一片(的)
-nichts    沒有一點東西
-wünschen    希望(有)
+das	Menü	菜單
+der	Laut	(語)音
+der	Laden	(商)店
+bekommen	得到
+Ct	分(貨幣單位)
+das	Geld	錢
+das	Problem	問題
+zu viel	太多
+zu wenig	太少
+am Stück	整塊(不必切片)
+dahaben	這裡有(賣)
+die	Kundin	女顧客
+drankommen	(照順序)輪到(某人)
+etwas	一些
+geben	給
+in Scheiben	(切成)一片一片(的)
+nichts	沒有一點東西
+wünschen	希望(有)
