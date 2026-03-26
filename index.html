@@ -288,16 +288,16 @@
                 if (!response.ok) throw new Error();
                 let text = await response.text();
 
-                // 1. 強力清理：移除所有 標記
+                // 1. 清理雜訊：移除檔案中任何 的標記
                 text = text.replace(/\/g, '');
 
                 vocabData = text.split('\n')
                     .filter(line => line.trim() !== '')
                     .map(line => {
+                        // 使用 Tab 分隔並清理前後空白
                         const parts = line.split('\t').map(p => p.trim()).filter(p => p !== '');
 
-                        // 2. 處理名詞：檢查第一個部分是否包含冠詞
-                        // 支援單一冠詞 (der) 或複合冠詞 (der/die)
+                        // 2. 判定是否為名詞 (支援 der, die, das 以及 L6 出現的 der/die)
                         const isNoun = parts.length >= 3 &&
                             /^(der|die|das|der\/die)$/i.test(parts[0]);
 
@@ -308,19 +308,22 @@
                                 cn: parts[2],
                                 type: 'noun'
                             };
-                        } else {
+                        } else if (parts.length >= 2) {
+                            // 一般單字或片語
                             return {
                                 de: parts[0],
                                 cn: parts[1],
                                 type: 'other'
                             };
                         }
-                    }).filter(item => item.de && item.cn); // 確保資料完整
+                        return null;
+                    }).filter(item => item !== null);
 
+                if (vocabData.length === 0) throw new Error("無效的檔案格式");
                 startGame();
             } catch (err) {
-                console.error(err);
-                alert("讀取失敗，請確認檔案格式！");
+                console.error("解析錯誤:", err);
+                alert("讀取失敗！請檢查檔案格式是否正確。");
             }
         }
 
