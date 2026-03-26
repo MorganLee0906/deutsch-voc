@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuoGerman - 德文單字特訓</title>
+    <title>DuoGerman - 德文單字特訓 (TSV版)</title>
     <style>
         :root {
             --duo-green: #58cc02;
@@ -19,7 +19,7 @@
         }
 
         body {
-            font-family: "Nunito", "Segoe UI", "Microsoft JhengHei", sans-serif;
+            font-family: "Nunito", sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -43,7 +43,6 @@
             display: flex;
         }
 
-        /* 選單與總結畫面樣式 */
         .menu-content {
             padding: 40px 20px;
             text-align: center;
@@ -71,7 +70,6 @@
             border-color: var(--duo-blue);
         }
 
-        /* 錯誤清單樣式 */
         .wrong-list {
             text-align: left;
             background: #fff1f1;
@@ -87,7 +85,6 @@
             padding-bottom: 5px;
         }
 
-        /* 遊戲畫面樣式 */
         .header {
             padding: 20px;
             display: flex;
@@ -218,7 +215,7 @@
     <div id="menu-screen" class="screen active">
         <div class="menu-content">
             <h1>Willkommen!</h1>
-            <p>請選擇一個單詞本：</p>
+            <p>請選擇單詞本 (TSV格式)：</p>
             <div id="vocab-list" class="vocab-list"></div>
         </div>
     </div>
@@ -252,16 +249,25 @@
 
     <script>
         let vocabData = [];
-        let wrongAnswers = []; // 用來儲存寫錯的題目
+        let wrongAnswers = [];
         let currentQIndex = 0;
         let isAnswered = false;
+
+        // --- TTS 語音功能 ---
+        function speak(text) {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'de-DE';
+            msg.rate = 0.9;
+            window.speechSynthesis.speak(msg);
+        }
 
         async function initMenu() {
             const listContainer = document.getElementById('vocab-list');
             listContainer.innerHTML = "載入中...";
             try {
                 const response = await fetch('./voc/list.json');
-                if (!response.ok) throw new Error();
                 const vocabFiles = await response.json();
                 listContainer.innerHTML = "";
                 vocabFiles.forEach(item => {
@@ -272,7 +278,7 @@
                     listContainer.appendChild(div);
                 });
             } catch (err) {
-                listContainer.innerHTML = "無法載入清單，請確認 voc/list.json。";
+                listContainer.innerHTML = "找不到 voc/list.json。";
             }
         }
 
@@ -280,21 +286,30 @@
             try {
                 const response = await fetch(`./voc/${fileName}`);
                 const text = await response.text();
-                vocabData = text.split('\n').filter(line => line.trim() !== '').map(line => {
-                    const parts = line.trim().split(/\s+/);
-                    if (['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
-                        return { art: parts[0].toLowerCase(), de: parts[1], cn: parts.slice(2).join(' '), type: 'noun' };
-                    }
-                    return { de: parts[0], cn: parts.slice(1).join(' '), type: 'other' };
-                });
+
+                vocabData = text.split('\n')
+                    .filter(line => line.trim() !== '')
+                    .map(line => {
+                        // 改用 Tab 分隔
+                        const parts = line.split('\t').map(p => p.trim());
+
+                        // 判斷邏輯：
+                        // 若有三個部分且第一部分是冠詞 -> 名詞
+                        // 若有兩個部分 -> 一般單字/片語
+                        if (parts.length >= 3 && ['der', 'die', 'das'].includes(parts[0].toLowerCase())) {
+                            return { art: parts[0].toLowerCase(), de: parts[1], cn: parts[2], type: 'noun' };
+                        } else {
+                            return { de: parts[0], cn: parts[1], type: 'other' };
+                        }
+                    });
                 startGame();
-            } catch (err) { alert("讀取失敗！"); }
+            } catch (err) { alert("檔案讀取失敗，請確認是否為 Tab 分隔格式。"); }
         }
 
         function startGame() {
             vocabData.sort(() => Math.random() - 0.5);
             currentQIndex = 0;
-            wrongAnswers = []; // 重置錯誤清單
+            wrongAnswers = [];
             switchScreen('game-screen');
             loadQuestion();
         }
@@ -310,6 +325,7 @@
             isAnswered = false;
             document.getElementById('bottom-sheet').classList.remove('show');
             const item = vocabData[currentQIndex];
+            speak(item.de);
             document.getElementById('progress-bar').style.width = `${(currentQIndex / vocabData.length) * 100}%`;
 
             const gameArea = document.getElementById('game-area');
@@ -345,6 +361,9 @@
             btn.onclick = () => {
                 if (isAnswered) return;
                 isAnswered = true;
+                const fullWord = item.art ? `${item.art} ${item.de}` : item.de;
+                speak(fullWord);
+
                 const sheet = document.getElementById('bottom-sheet');
                 if (isCorrect) {
                     btn.classList.add('correct');
@@ -354,7 +373,6 @@
                     btn.classList.add('wrong');
                     sheet.className = 'bottom-sheet show wrong';
                     document.getElementById('feedback-msg').textContent = "正確答案是：";
-                    // 紀錄錯誤題目
                     if (!wrongAnswers.find(w => w.de === item.de)) wrongAnswers.push(item);
                 }
                 document.getElementById('feedback-detail').textContent = `${item.art ? item.art + ' ' : ''}${item.de} = ${item.cn}`;
@@ -364,29 +382,24 @@
 
         function nextQuestion() {
             currentQIndex++;
-            if (currentQIndex >= vocabData.length) {
-                showResults();
-            } else {
-                loadQuestion();
-            }
+            if (currentQIndex >= vocabData.length) showResults();
+            else loadQuestion();
         }
 
         function showResults() {
             switchScreen('result-screen');
             const summary = document.getElementById('result-summary');
             const wrongDisplay = document.getElementById('wrong-answers-display');
-
             summary.innerHTML = `本次練習共 ${vocabData.length} 題，寫錯 ${wrongAnswers.length} 題。`;
-
             if (wrongAnswers.length > 0) {
                 wrongDisplay.style.display = 'block';
-                wrongDisplay.innerHTML = "<strong>需要再複習的單字：</strong><br><br>";
+                wrongDisplay.innerHTML = "<strong>錯題清單：</strong><br><br>";
                 wrongAnswers.forEach(w => {
                     wrongDisplay.innerHTML += `<div class="wrong-item">${w.art ? w.art + ' ' : ''}<strong>${w.de}</strong> : ${w.cn}</div>`;
                 });
             } else {
                 wrongDisplay.style.display = 'none';
-                summary.innerHTML += "<br>🎉 全對！太強了！";
+                summary.innerHTML += "<br>🎉 完美達成！";
             }
         }
 
