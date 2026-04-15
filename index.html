@@ -254,9 +254,12 @@
         let currentQIndex = 0;
         let isAnswered = false;
 
-        // 添加鍵盤事件監聽器，用於1-4鍵選擇選項
+        // 添加鍵盤事件監聽器，用於1-4鍵選擇選項及Enter繼續
         document.addEventListener('keydown', function (event) {
-            if (!isAnswered && document.getElementById('game-screen').classList.contains('active')) {
+            const bottomSheet = document.getElementById('bottom-sheet');
+            if (bottomSheet.classList.contains('show') && event.key === 'Enter') {
+                nextQuestion();
+            } else if (!isAnswered && document.getElementById('game-screen').classList.contains('active')) {
                 const key = event.key;
                 if (key >= '1' && key <= '4') {
                     const index = parseInt(key) - 1;
