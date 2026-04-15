@@ -254,6 +254,20 @@
         let currentQIndex = 0;
         let isAnswered = false;
 
+        // 添加鍵盤事件監聽器，用於1-4鍵選擇選項
+        document.addEventListener('keydown', function (event) {
+            if (!isAnswered && document.getElementById('game-screen').classList.contains('active')) {
+                const key = event.key;
+                if (key >= '1' && key <= '4') {
+                    const index = parseInt(key) - 1;
+                    const buttons = document.querySelectorAll('.option-btn');
+                    if (buttons[index]) {
+                        buttons[index].click();
+                    }
+                }
+            }
+        });
+
         // --- TTS 語音 ---
         function speak(text) {
             if (!window.speechSynthesis) return;
