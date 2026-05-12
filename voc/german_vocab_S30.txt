@@ -1,0 +1,49 @@
+lieb	親愛的
+die	Mitte	中心，中央，中間
+Mitten	中心 (複數)
+die	Natur	自然
+die	Postkarte	明信片
+Postkarten	明信片 (複數)
+der	Regen	雨
+das	Schiff	船
+Schiffe	船 (複數)
+die	Sehenswürdigkeit	觀光景點
+Sehenswürdigkeiten	觀光景點 (複數)
+erleben	經歷
+fremd	陌生的，外國的
+der	Tourist	觀光客
+Touristen	觀光客 (複數)
+die	Touristin	女觀光客
+Touristinnen	女觀光客 (複數)
+der	Verkehr	交通
+die	Welt	世界
+Welten	世界 (複數)
+wollen	要
+die	Bar	酒吧
+Bars	酒吧 (複數)
+bekannt	有名的
+der	Bundestag	聯邦德國國會大廈
+dienstags	每週二
+donnerstags	每週四
+das	Eis	冰淇淋
+historisch	歷史上的
+mal	一次，一下
+die	Mauer	牆
+Mauern	牆 (複數)
+mittwochs	每週三
+der	Marktplatz	市集廣場
+Marktplätze	市集廣場 (複數)
+der	Rathausplatz	市政廳廣場
+Rathausplätze	市政廳廣場 (複數)
+die	Richtung	方向
+Richtungen	方向 (複數)
+abholen	來拿
+der	Ausweis	證件
+Ausweise	證件 (複數)
+die	Bahn	火車/電車/街車
+Bahnen	火車/電車/街車 (複數)
+das	Formular	表格
+Formulare	表格 (複數)
+der	Pass	護照
+Pässe	護照 (複數)
+Personalien	個人資料 (複數)

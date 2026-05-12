@@ -1,5 +1,9 @@
 [
   {
+    "name": "german_vocab_S29",
+    "file": "german_vocab_S29.txt"
+  },
+  {
     "name": "L6",
     "file": "L6.txt"
   },
@@ -14,5 +18,13 @@
   {
     "name": "L4",
     "file": "L4.txt"
+  },
+  {
+    "name": "german_vocab_S31",
+    "file": "german_vocab_S31.txt"
+  },
+  {
+    "name": "german_vocab_S30",
+    "file": "german_vocab_S30.txt"
   }
 ]

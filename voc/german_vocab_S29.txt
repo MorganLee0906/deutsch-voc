@@ -1,0 +1,49 @@
+eröffnen	開(帳戶)
+das	Gehalt	薪資，薪水
+Gehälter	薪資 (複數)
+das	Girokonto	銀行儲蓄帳戶
+Girokonten	儲蓄帳戶 (複數)
+das	Konto	銀行帳戶
+Konten	帳戶 (複數)
+mehrer-	不只一個
+die	Möglichkeit	可能性
+Möglichkeiten	可能性 (複數)
+die	Passnummer	護照號碼
+Passnummern	護照號碼 (複數)
+der	Personalbogen	人事資料問卷
+Personalbögen	人事資料問卷 (複數)
+der	Stock	(大樓的)樓層
+der	Tarifbereich	工資協定範圍，薪資級別
+überweisen	轉帳
+die	Notiz	筆記
+Notizen	筆記 (複數)
+das	Büro	辦公室
+Büros	辦公室 (複數)
+dort	那裏
+gegenüber	對面
+hart	硬，重
+leidtun	抱歉
+weich	輕 (聲音)
+das	Ausländeramt	外事處
+Ausländerämter	外事處 (複數)
+der	Kollege	同事
+Kollegen	同事 (複數)
+die	Kollegin	女同事
+Kolleginnen	女同事 (複數)
+aufhängen	高高掛起來
+der	Fahrplan	(公車火車)行車時刻表
+Fahrpläne	行車時刻表 (複數)
+der	Geldautomat	自動提款機
+Geldautomaten	自動提款機 (複數)
+als	比
+der	Anfang	開始
+Anfänge	開始 (複數)
+bequem	舒服
+berühmt	有名，著名
+das	Geschäft	商店
+Geschäfte	商店 (複數)
+die	Geschichte	歷史
+hoch	高
+interessant	有趣，有意思
+die	Kultur	文化
+Kulturen	文化 (複數)
