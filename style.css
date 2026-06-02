@@ -1,0 +1,324 @@
+:root {
+    --duo-green: #58cc02;
+    --duo-green-dark: #46a302;
+    --duo-red: #ff4b4b;
+    --duo-red-dark: #d42a2a;
+    --duo-blue: #1cb0f6;
+    --duo-blue-dark: #1480b3;
+    --duo-gray: #e5e5e5;
+    --duo-text: #4b4b4b;
+    --bg: #fff;
+}
+
+body {
+    font-family: "Nunito", "Segoe UI", "Microsoft JhengHei", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--bg);
+    color: var(--duo-text);
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    flex-direction: column;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.menu-content {
+    padding: 40px 20px;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.vocab-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.vocab-item {
+    padding: 20px;
+    border: 2px solid var(--duo-gray);
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.vocab-item:hover {
+    background-color: #f7f7f7;
+    border-color: var(--duo-blue);
+}
+
+.wrong-list {
+    text-align: left;
+    background: #fff1f1;
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 1px solid #ffdfe0;
+}
+
+.wrong-item {
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.progress-container {
+    flex-grow: 1;
+    height: 16px;
+    background-color: var(--duo-gray);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--duo-green);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.game-area {
+    flex-grow: 1;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+.word-display {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 2px solid #e5e5e5;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+@media (min-width: 400px) {
+    .options-grid.articles {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.option-btn {
+    background: white;
+    border: 2px solid var(--duo-gray);
+    border-bottom-width: 4px;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-style: solid;
+    font-family: inherit;
+}
+
+.option-btn.correct {
+    background-color: #d7ffb8;
+    border-color: var(--duo-green);
+    color: var(--duo-green-dark);
+}
+
+.option-btn.wrong {
+    background-color: #ffdfe0;
+    border-color: var(--duo-red);
+    color: var(--duo-red-dark);
+}
+
+.bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateY(100%);
+    transition: transform 0.3s;
+    z-index: 10;
+    border-radius: 20px 20px 0 0;
+}
+
+.bottom-sheet.show {
+    transform: translateY(0);
+}
+
+.bottom-sheet.correct {
+    background-color: #d7ffb8;
+    color: var(--duo-green-dark);
+}
+
+.bottom-sheet.wrong {
+    background-color: #ffdfe0;
+    color: var(--duo-red-dark);
+}
+
+.next-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    margin-top: 10px;
+    font-family: inherit;
+}
+
+.bottom-sheet.correct .next-btn {
+    background-color: var(--duo-green);
+}
+
+.bottom-sheet.wrong .next-btn {
+    background-color: var(--duo-red);
+}
+
+/* Mode toggle */
+.mode-toggle {
+    display: flex;
+    background: var(--duo-gray);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--duo-text);
+    transition: background 0.2s, color 0.2s;
+    font-family: inherit;
+}
+
+.mode-btn.active {
+    background: white;
+    color: var(--duo-blue);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Dictation */
+.replay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 25px;
+    background: var(--duo-blue);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.replay-btn:hover {
+    background: var(--duo-blue-dark);
+}
+
+.replay-btn:active {
+    transform: scale(0.98);
+}
+
+.umlaut-helpers {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 5px 0;
+}
+
+.umlaut-btn {
+    padding: 8px 14px;
+    border: 2px solid var(--duo-gray);
+    border-radius: 10px;
+    background: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.umlaut-btn:hover {
+    background: var(--duo-gray);
+}
+
+.dictation-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    font-size: 1.3rem;
+    border: 2px solid var(--duo-gray);
+    border-radius: 15px;
+    text-align: center;
+    outline: none;
+    margin: 12px 0 10px 0;
+    font-family: inherit;
+}
+
+.dictation-input:focus {
+    border-color: var(--duo-blue);
+}
+
+.dictation-input:disabled {
+    background: #f9f9f9;
+    color: var(--duo-text);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: var(--duo-blue);
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background: var(--duo-blue-dark);
+}
