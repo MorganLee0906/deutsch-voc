@@ -43,6 +43,19 @@
         </div>
     </div>
 
+    <div id="list-screen" class="screen">
+        <div class="header">
+            <div style="cursor:pointer; font-size: 1.5rem;" onclick="showMenu()">❮</div>
+            <h2 id="list-title" style="flex-grow:1; text-align:center; margin:0; font-size:1rem;"></h2>
+            <button id="edit-toggle-btn" class="list-edit-btn" onclick="toggleEditMode()">✏️ 編輯</button>
+        </div>
+        <div id="list-content" class="list-content"></div>
+        <div id="list-footer" class="list-footer">
+            <button id="reset-btn" class="list-reset-btn" onclick="resetToOriginal()" style="display:none;">↺ 重置</button>
+            <button class="list-download-btn" onclick="downloadVocab()">下載 .txt</button>
+        </div>
+    </div>
+
     <div class="bottom-sheet" id="bottom-sheet">
         <div id="feedback-msg" style="font-weight:bold; font-size:1.2rem;"></div>
         <div id="feedback-detail" style="margin: 5px 0 15px 0;"></div>

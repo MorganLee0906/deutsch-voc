@@ -322,3 +322,159 @@ body {
 .submit-btn:hover {
     background: var(--duo-blue-dark);
 }
+
+/* ── 單字列表畫面 ────────────────────────────────────────── */
+
+.list-edit-btn {
+    border: 2px solid var(--duo-blue);
+    border-radius: 10px;
+    background: white;
+    color: var(--duo-blue);
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.list-edit-btn.active {
+    background: var(--duo-blue);
+    color: white;
+}
+
+.list-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 20px 90px;
+}
+
+.list-row {
+    display: grid;
+    grid-template-columns: 28px 40px 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--duo-gray);
+    font-size: 0.95rem;
+}
+
+.list-row.edit-row {
+    grid-template-columns: 28px 72px 1fr 1fr;
+    padding: 7px 0;
+}
+
+.list-num {
+    color: #aaa;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.list-art {
+    color: var(--duo-blue-dark);
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.list-de {
+    font-weight: bold;
+}
+
+.list-cn {
+    color: #666;
+}
+
+.list-row input,
+.list-row select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1.5px solid var(--duo-gray);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: white;
+    outline: none;
+}
+
+.list-row input:focus,
+.list-row select:focus {
+    border-color: var(--duo-blue);
+}
+
+.delete-row-btn {
+    border: none;
+    background: none;
+    color: #ccc;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.delete-row-btn:hover {
+    color: var(--duo-red);
+}
+
+.add-row-btn {
+    text-align: center;
+    padding: 12px;
+    color: var(--duo-blue);
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px dashed var(--duo-gray);
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.add-row-btn:hover {
+    border-color: var(--duo-blue);
+    background: #f0faff;
+}
+
+.list-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    background: white;
+    border-top: 1px solid var(--duo-gray);
+    display: flex;
+    gap: 10px;
+}
+
+.list-download-btn {
+    flex-grow: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: var(--duo-blue);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.list-download-btn:hover {
+    background: var(--duo-blue-dark);
+}
+
+.list-reset-btn {
+    padding: 13px 16px;
+    border: 2px solid var(--duo-gray);
+    border-radius: 12px;
+    background: white;
+    color: var(--duo-text);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.list-reset-btn:hover {
+    border-color: var(--duo-red);
+    color: var(--duo-red-dark);
+}
