@@ -4,7 +4,6 @@ der	Babysitter	褓姆
 Babysitter	褓姆 (複數)
 die	Babysitterin	女褓姆
 Babysitterinnen	女褓姆 (複數)
-tragen	照顧/穿戴/攜帶
 betreuen	照顧
 denn	因為
 der	Ingenieur	工程師
@@ -20,12 +19,12 @@ Kindergruppen	兒童班,一群小孩 (複數)
 das	Kinderzimmer	小孩房間
 Kinderzimmer	小孩房間 (複數)
 mieten	承租
+netto	稅後(所得)
+nett    友善
 die	Möbel	家具 (複數)
-nett	友善,(人)好
 die	Ordnung	秩序
 Ordnungen	秩序 (複數)
 pro	每一(個)
-領先	每一(個)
 schwanger	懷孕(了)
 seit	從...開始
 der	Taxifahrer	計程車司機
@@ -78,6 +77,7 @@ weiterschreiben	繼續寫
 der	Karton	紙箱
 Kartons	紙箱 (複數)
 plötzlich	突然(間)
+tragen  搬運
 der	Umzug	搬家
 Umzüge	搬家 (複數)
 auspacken	打開,拆開
@@ -85,10 +85,10 @@ benutzen	使用
 eigentlich	事實上,實際上
 die	Hilfe	救命,求助
 Hilfen	救命,求助 (複數)
-die	控制	控制,檢測,確定
+die	Kontrolle   控制,檢測,確定
+Kontrollen  控制,檢測,確定(複數)
 der	Mietvertrag	房屋租約
 Mietverträge	房屋租約 (複數)
-netto	稅後(所得)
 das	Perfekt	(現在)完成式
 leise	輕聲,小聲
 der	Schlüssel	鑰匙
@@ -101,3 +101,4 @@ passieren	發生
 ausziehen	搬出
 die	Garage	車庫
 Garagen	車庫 (複數)
+packen  包裝
