@@ -89,18 +89,45 @@ if (window.speechSynthesis) {
     initVoices();
 }
 
+// iOS/Safari 需要在 user gesture 內先發一個空 utterance 解鎖 SpeechSynthesis
+// 之後的 speak() 才能在 async 流程中正常運作
+let speechUnlocked = false;
+document.addEventListener('click', function unlockSpeech() {
+    if (speechUnlocked || !window.speechSynthesis) return;
+    speechUnlocked = true;
+    const unlock = new SpeechSynthesisUtterance('');
+    unlock.volume = 0;
+    window.speechSynthesis.speak(unlock);
+    document.removeEventListener('click', unlockSpeech);
+}, { once: true });
+
 function speak(text) {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    // Chrome bug: cancel() 後立即 speak() 有時靜音，需等一個 tick
-    setTimeout(() => {
+    const ss = window.speechSynthesis;
+    if (!ss) return;
+
+    // 每次呼叫時確保 voices 是最新的（voiceschanged 可能尚未觸發）
+    if (!cachedVoices.length) cachedVoices = ss.getVoices();
+
+    const doSpeak = () => {
         const msg = new SpeechSynthesisUtterance(text);
-        const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
-        if (germanVoice) msg.voice = germanVoice;
         msg.lang = 'de-DE';
         msg.rate = 0.9;
-        window.speechSynthesis.speak(msg);
-    }, 50);
+        const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
+        if (germanVoice) msg.voice = germanVoice;
+        ss.speak(msg);
+    };
+
+    if (ss.speaking || ss.pending) {
+        // 正在播放時才需要 cancel + 延遲（Chrome stuck bug fix）
+        ss.cancel();
+        setTimeout(doSpeak, 100);
+    } else if (ss.paused) {
+        ss.resume();
+        setTimeout(doSpeak, 50);
+    } else {
+        // 沒有任何播放中：直接呼叫，保持 user gesture context（iOS 相容）
+        doSpeak();
+    }
 }
 
 // ── 模式切換 ──────────────────────────────────────────────────
