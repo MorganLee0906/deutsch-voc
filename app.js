@@ -91,13 +91,16 @@ if (window.speechSynthesis) {
 
 function speak(text) {
     if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel(); // Chrome stuck bug fix
-    const msg = new SpeechSynthesisUtterance(text);
-    const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
-    if (germanVoice) msg.voice = germanVoice;
-    msg.lang = 'de-DE';
-    msg.rate = 0.9;
-    window.speechSynthesis.speak(msg);
+    window.speechSynthesis.cancel();
+    // Chrome bug: cancel() 後立即 speak() 有時靜音，需等一個 tick
+    setTimeout(() => {
+        const msg = new SpeechSynthesisUtterance(text);
+        const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
+        if (germanVoice) msg.voice = germanVoice;
+        msg.lang = 'de-DE';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    }, 50);
 }
 
 // ── 模式切換 ──────────────────────────────────────────────────
@@ -112,7 +115,9 @@ function setMode(mode) {
 // ── 鍵盤快捷鍵 ────────────────────────────────────────────────
 
 document.addEventListener('keydown', function (event) {
-    if (document.activeElement && document.activeElement.id === 'dictation-input') return;
+    // 只在聽寫 input 有焦點且尚未回答時，才讓 input 自己處理 Enter
+    const dictInput = document.getElementById('dictation-input');
+    if (dictInput && !dictInput.disabled && document.activeElement === dictInput) return;
 
     const bottomSheet = document.getElementById('bottom-sheet');
     if (bottomSheet.classList.contains('show') && event.key === 'Enter') {
@@ -382,7 +387,8 @@ function checkDictationAnswer() {
 
     const item = vocabData[currentQIndex];
     const correctAnswer = item.type === 'noun' ? `${item.art} ${item.de}` : item.de;
-    const isCorrect = input.value.trim().toLowerCase() === correctAnswer.toLowerCase();
+    const normalize = s => s.trim().replace(/\s+/g, ' ').toLowerCase();
+    const isCorrect = normalize(input.value) === normalize(correctAnswer);
 
     speak(correctAnswer);
 
