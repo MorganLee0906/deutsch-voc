@@ -2,95 +2,96 @@ das	Baby	嬰兒
 Babys	嬰兒 (複數)
 der	Babysitter	褓姆
 Babysitter	褓姆 (複數)
-die	Babysitterin	女褓姆
-Babysitterinnen	女褓姆 (複數)
+die	Babysitterin	褓姆
+Babysitterinnen	褓姆 (複數)
 betreuen	照顧
 denn	因為
-der	Ingenieur	工程師
-Ingenieure	工程師 (複數)
-die	Ingenieurin	女工程師
-Ingenieurinnen	女工程師 (複數)
-der	Italiener	義大利人
-Italiener	義大利人 (複數)
-die	Italienerin	義大利人(女)
-Italienerinnen	義大利人(女) (複數)
-die	Kindergruppe	兒童班,一群小孩
-Kindergruppen	兒童班,一群小孩 (複數)
-das	Kinderzimmer	小孩房間
-Kinderzimmer	小孩房間 (複數)
-mieten	承租
+eigentlich	事實上，實際上
+die	Hilfe	救命，求助
+Hilfen	救命，求助 (複數)
+die	Kindergruppe	兒童班，一群小孩
+Kindergruppen	兒童班，一群小孩 (複數)
 netto	稅後(所得)
-nett	友善
-die	Möbel	家具 (複數)
-die	Ordnung	秩序
-Ordnungen	秩序 (複數)
-pro	每一(個)
 schwanger	懷孕(了)
-seit	從...開始
 der	Taxifahrer	計程車司機
 Taxifahrer	計程車司機 (複數)
-schlafen	睡覺
-der	Schreibtisch	寫字桌,書桌
-Schreibtische	寫字桌,書桌 (複數)
-sofort	立即,立刻
-die	Taxifahrerin	女計程車司機
-Taxifahrerininnen	女計程車司機 (複數)
-der	Standard-Mietvertrag	一般/標準房租合約
-Standard-Mietverträge	一般/標準房租合約 (複數)
+die	Taxifahrerin	計程車司機
+Taxifahrerinnen	計程車司機 (複數)
 der	Toningenieur	音控工程師
 Toningenieure	音控工程師 (複數)
-die	Untermiete	二房客
-Untermieten	二房客 (複數)
-die	Toningenieurin	女音控工程師
-Toningenieurinnen	女音控工程師 (複數)
-der	Vermieter	房東
-Vermieter	房東 (複數)
-umziehen	搬家
-die	Vermieterin	女房東
-Vermieterinnen	女房東 (複數)
+die	Toningenieurin	音控工程師
+Toningenieurinnen	音控工程師 (複數)
 unterrichten	教(書)
-verdienen	賺(錢),收入
+verdienen	賺(錢)，收入
 zurzeit	目前
 zweimal	兩次
-dazu	對此,此外,同時
+dazu	對此，此外，同時
 etwa	大約
-ideal	理想/完美的,太棒了
-bezahlen	付錢
-mitbenutzen	一起(使)用,分享
-abstellen	擺放,停放
-einziehen	搬入
-der	Flur	走廊,通道
-Flure	走廊,通道 (複數)
-der	Hof	院子
-Höfe	院子 (複數)
-schließlich	終於,最後
-zuerst	首先
-zuletzt	最後
-installieren	裝(設)
 der	Keller	地下室
 Keller	地下室 (複數)
-trocknen	脫水,弄乾
-die	Wäsche	可以換洗的衣物
+trocknen	脫水，弄乾
+die	Wäsche	(可以換洗的)衣物
 bleiben	停留
 früh	早(明天早上)
 weiterschreiben	繼續寫
 der	Karton	紙箱
 Kartons	紙箱 (複數)
-plötzlich	突然(間)
-tragen	搬運
+plötzlich	突然(問)
+tragen	(此處指)搬運
 der	Umzug	搬家
 Umzüge	搬家 (複數)
-auspacken	打開,拆開
-benutzen	使用
-eigentlich	事實上,實際上
-die	Hilfe	救命,求助
-Hilfen	救命,求助 (複數)
-die	Kontrolle	控制,檢測,確定
-Kontrollen	控制,檢測,確定(複數)
+auspacken	(此處指)打開，拆開
+der	Ingenieur	工程師
+Ingenieure	工程師 (複數)
+die	Ingenieurin	工程師
+Ingenieurinnen	工程師 (複數)
+der	Italiener	義大利人
+Italiener	義大利人 (複數)
+die	Italienerin	義大利人
+Italienerinnen	義大利人 (複數)
+die	Kontrolle	控制，檢測，確定
+Kontrollen	控制，檢測，確定 (複數)
+das	Kinderzimmer	小孩房間
+Kinderzimmer	小孩房間 (複數)
 der	Mietvertrag	房屋租約
 Mietverträge	房屋租約 (複數)
-das	Perfekt	(現在)完成式
-leise	輕聲,小聲
+mieten	(承)租
+die	Möbel	家具
+nett	友善，(人)好
+die	Ordnung	秩序(in Ordnung=沒問題)
+Ordnungen	秩序(in Ordnung=沒問題) (複數)
+pro	每一(個)
+seit	從...開始
+schlafen	睡覺
+der	Schreibtisch	寫字桌，書桌
+Schreibtische	寫字桌，書桌 (複數)
+sofort	立即，立刻
+der	Standard-Mietvertrag	一般/標準房租合約
+Standard-Mietverträge	一般/標準房租合約 (複數)
+die	Untermiete	二房客
+der	Vermieter	房東
+Vermieter	房東 (複數)
+die	Vermieterin	女房東
+Vermieterinnen	女房東 (複數)
+ideal	理想/完美的，太棒了
+packen	包(裝)
+bezahlen	付錢
+mitbenutzen	一起(使)用，分享
+abstellen	擺放，停放
+einziehen	搬入
+der	Flur	走廊，通道
+Flure	走廊，通道 (複數)
+der	Hof	院子
+Höfe	院子 (複數)
+schließlich	終於，最後
+zuerst	首先
+zuletzt	最後
+montags	星期一這一天，每週一
+sauber	乾淨
+vermieten	出租
+warm	溫暖，暖和
+installieren	裝(設)
+leise	輕聲，小聲
 der	Schlüssel	鑰匙
 Schlüssel	鑰匙 (複數)
 tun	做
@@ -101,4 +102,46 @@ passieren	發生
 ausziehen	搬出
 die	Garage	車庫
 Garagen	車庫 (複數)
-packen	包裝
+eigen	自己的(他要擁有自己的一家公司.)
+erfragen	通過詢問而得知
+der	Lebenslauf	自傳
+Lebensläufe	自傳 (複數)
+das	Schulfest	園遊會，學校內的慶祝活動
+Schulfeste	園遊會，學校內的慶祝活動 (複數)
+der	Krankenwagen	(醫院)救護車
+Krankenwagen	(醫院)救護車 (複數)
+persönlich	個人的，私人的
+der	Kindergarten	幼稚園
+Kindergärten	幼稚園 (複數)
+der	Unfall	意外事故
+Unfälle	意外事故 (複數)
+backen	烤(麵包/蛋糕)
+das	Krankenhaus	醫院
+Krankenhäuser	醫院 (複數)
+renovieren	整修
+bald	很快地(再見!回頭見!)
+die	Hauptstadt	首都
+Hauptstädte	首都 (複數)
+P. S.	附記
+spontan	一時衝動的，本能的
+der	Wecker	鬧鐘
+Wecker	鬧鐘 (複數)
+wegbringen	拿走，丟掉
+die	Geschichte	故事(Carlos在說一個故事.)
+Geschichten	故事(Carlos在說一個故事.) (複數)
+rufen	叫，喊
+weitergehen	繼續(往前)
+die	Bewegung	動作，移動
+Bewegungen	動作，移動 (複數)
+dies	這(個/些)
+genauso	也是如此，相同的情況
+der	Test	考試，測試
+Tests	考試，測試 (複數)
+der	Samstagabend	星期六晚上，週末晚上
+Samstagabende	星期六晚上，週末晚上 (複數)
+der	Sonntagmittag	星期天中午
+Sonntagmittage	星期天中午 (複數)
+der Speicher    頂樓
+Speicher    頂樓（複數）
+umziehen    搬家
+benutzen    使用
