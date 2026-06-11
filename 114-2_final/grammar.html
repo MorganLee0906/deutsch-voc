@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>德文考試複習 6/12</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #22263a;
+      --border: #2e334d;
+      --text: #e8eaf6;
+      --muted: #7b82a8;
+      --accent: #7c83f5;
+      --green: #5ed3b0;
+      --red: #f26d6d;
+      --yellow: #f6c90e;
+      --orange: #f09a5e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* Section nav */
+    .section-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .snav-btn {
+      padding: 7px 16px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .18s;
+    }
+
+    .snav-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: #1a1f3a;
+    }
+
+    /* Section titles */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .section-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* Konjunktionen */
+    .konj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .konj-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    .konj-card:hover {
+      border-color: var(--accent);
+    }
+
+    .konj-word {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .konj-meaning {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 3px 0 8px;
+    }
+
+    .konj-rule {
+      font-size: 0.78rem;
+      background: var(--surface);
+      border-radius: 7px;
+      padding: 5px 9px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .konj-examples {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .konj-examples.show {
+      display: block;
+    }
+
+    .example-line {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 4px 0;
+      border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+
+    .example-line .de {
+      color: var(--text);
+    }
+
+    .toggle-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* aduso mnemonic */
+    .aduso {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .aduso-word {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      color: var(--accent);
+    }
+
+    .aduso-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Comma rule visual */
+    .comma-rule {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .rule-pill {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .no-comma {
+      background: #1a2e26;
+      color: var(--green);
+    }
+
+    .yes-comma {
+      background: #2e1a1a;
+      color: var(--red);
+    }
+
+    /* Modal verbs table */
+    .modal-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight {
+      font-weight: 700;
+      color: var(--yellow);
+    }
+
+    .pronoun-col {
+      color: var(--muted);
+    }
+
+    .conj-col {
+      font-weight: 600;
+    }
+
+    /* Quiz */
+    .quiz-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 14px;
+    }
+
+    .quiz-q {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .quiz-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .quiz-opts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .opt {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+    }
+
+    .opt:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .opt.correct {
+      background: #1a2e26;
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .opt.wrong {
+      background: #2e1a1a;
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .opt:disabled {
+      cursor: default;
+    }
+
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 9px 22px;
+      font-size: 0.85rem;
+      transition: filter .15s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.12);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .quiz-score {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* Präposition time */
+    .prep-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .prep-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .prep-word {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    .prep-meaning {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 4px 0 10px;
+    }
+
+    .prep-ex {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    /* Dativ table */
+    .dativ-note {
+      background: var(--surface);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    /* Personalpronomen */
+    .pron-table-wrap {
+      overflow-x: auto;
+    }
+
+    .pron-table {
+      min-width: 480px;
+    }
+
+    .pron-table th {
+      background: var(--surface);
+    }
+
+    .nom {
+      color: #7c83f5;
+      font-weight: 600;
+    }
+
+    .akk {
+      color: #5ed3b0;
+      font-weight: 600;
+    }
+
+    .dat {
+      color: #f09a5e;
+      font-weight: 600;
+    }
+
+    .case-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    .badge-nom {
+      background: #2a2f52;
+      color: #7c83f5;
+    }
+
+    .badge-akk {
+      background: #1a2e26;
+      color: #5ed3b0;
+    }
+
+    .badge-dat {
+      background: #3a2a1a;
+      color: #f09a5e;
+    }
+
+    .case-legend {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pron-quiz-opts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* fill-in quiz */
+    .fill-sentence {
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.8;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .blank {
+      display: inline-block;
+      min-width: 70px;
+      border-bottom: 2px solid var(--accent);
+      text-align: center;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 0 4px;
+    }
+
+    .blank.filled-correct {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .blank.filled-wrong {
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    .fill-explain {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      display: none;
+    }
+
+    .fill-explain.show {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>德文考試複習</h1>
+  <p class="subtitle">6/12 考試 · Lektionen 8, 9, 12</p>
+
+  <div class="section-nav">
+    <button class="snav-btn active" onclick="showSection('konj')">① 連接詞</button>
+    <button class="snav-btn" onclick="showSection('modal')">② wollen / können</button>
+    <button class="snav-btn" onclick="showSection('prep')">③ vor/nach/seit</button>
+    <button class="snav-btn" onclick="showSection('pron')">④ 人稱代名詞</button>
+    <button class="snav-btn" onclick="showSection('quiz')">🧪 綜合測驗</button>
+  </div>
+
+  <!-- ①  KONJUNKTIONEN -->
+  <div class="section active" id="sec-konj">
+    <div class="section-title">6 個不佔位的連接詞</div>
+    <div class="section-sub">Konjunktionen in der Position Null — 動詞位置不因連接詞而改變</div>
+
+    <div class="aduso">
+      <div class="aduso-word">a·d·u·s·o</div>
+      <div class="aduso-sub">aber · denn+doch · und · sondern · oder — 記憶口訣</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">逗號規則速覽</div>
+      <div class="comma-rule">
+        <span class="rule-pill no-comma">und — 通常不加逗號</span>
+        <span class="rule-pill no-comma">oder — 通常不加逗號</span>
+        <span class="rule-pill yes-comma">aber — 前面加逗號</span>
+        <span class="rule-pill yes-comma">doch — 前面加逗號</span>
+        <span class="rule-pill yes-comma">denn — 前面加逗號</span>
+        <span class="rule-pill yes-comma">sondern — 前面加逗號</span>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted)">※ und 例外：兩個主句有<strong
+          style="color:var(--text)">不同主詞</strong>時可加逗號（可省略）</div>
+    </div>
+
+    <div class="konj-grid">
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">und</div>
+        <div class="konj-meaning">和、並且</div>
+        <div class="konj-rule">連接詞或句子，通常不加逗號</div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Die Wohnung ist ruhig und sie liegt in der Nähe vom
+              Park.</span><br>這間公寓安靜，且靠近公園。</div>
+          <div class="example-line"><span class="de">Er ist fünfzehn Jahre alt und (er) geht zur
+              Schule.</span><br>他15歲，並且上學。</div>
+        </div>
+      </div>
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">oder</div>
+        <div class="konj-meaning">或者</div>
+        <div class="konj-rule">表選擇，通常不加逗號</div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Wir müssen jetzt gehen oder wir verpassen den
+              Zug.</span><br>我們現在得走，否則會錯過火車。</div>
+          <div class="example-line"><span class="de">Er wird wieder anrufen oder Blumen schicken.</span><br>他會再打電話或送花。
+          </div>
+        </div>
+      </div>
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">aber</div>
+        <div class="konj-meaning">但是</div>
+        <div class="konj-rule">表對比，<span style="color:var(--red)">前面加逗號</span></div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Die Kinder schlafen, aber die Mutter ist noch
+              wach.</span><br>孩子們在睡覺，但媽媽還醒著。</div>
+          <div class="example-line"><span class="de">Klaus wohnt sehr schön, aber die Wohnung ist auch noch
+              billig.</span><br>Klaus住得很舒適，但房租也很便宜。</div>
+        </div>
+      </div>
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">doch</div>
+        <div class="konj-meaning">然而、卻</div>
+        <div class="konj-rule">類似 aber，較正式或表出乎意料，<span style="color:var(--red)">前面加逗號</span></div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Er sagte, sie kommt nicht. Doch sie ist da.</span><br>他說她不來，然而她在這裡。
+          </div>
+        </div>
+      </div>
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">denn</div>
+        <div class="konj-meaning">因為</div>
+        <div class="konj-rule">表原因，<span style="color:var(--red)">前面加逗號</span></div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Ich brauche eine große Wohnung, denn ich arbeite zu
+              Hause.</span><br>我需要大一點的公寓，因為我在家工作。</div>
+          <div class="example-line"><span class="de">Ich komme nicht mit, denn ich habe bald eine
+              Prüfung.</span><br>我不一起去，因為我快要考試了。</div>
+        </div>
+      </div>
+
+      <div class="konj-card" onclick="toggleEx(this)">
+        <div class="konj-word">sondern</div>
+        <div class="konj-meaning">而是</div>
+        <div class="konj-rule">常搭配 nicht…, sondern…，<span style="color:var(--red)">前面加逗號</span></div>
+        <div class="toggle-hint">▼ 點擊看例句</div>
+        <div class="konj-examples">
+          <div class="example-line"><span class="de">Nicht ich, sondern du musst die Rechnung
+              bezahlen.</span><br>不是我，而是你必須付帳。</div>
+          <div class="example-line"><span class="de">Wir fahren nicht nach Frankreich, sondern nach
+              Deutschland.</span><br>我們不去法國，而是去德國。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ②  MODAL VERBS -->
+  <div class="section" id="sec-modal">
+    <div class="section-title">情態助動詞：wollen / können</div>
+    <div class="section-sub">變位不規則，尤其注意 ich / er/sie/es 字尾消失</div>
+
+    <div class="card">
+      <div class="card-title">動詞變位表</div>
+      <div class="modal-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>人稱</th>
+              <th>können（能夠/可以）</th>
+              <th>wollen（要/想要）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="pronoun-col">ich</td>
+              <td class="conj-col highlight">kann</td>
+              <td class="conj-col highlight">will</td>
+            </tr>
+            <tr>
+              <td class="pronoun-col">du</td>
+              <td class="conj-col">kannst</td>
+              <td class="conj-col">willst</td>
+            </tr>
+            <tr>
+              <td class="pronoun-col">er/sie/es</td>
+              <td class="conj-col highlight">kann</td>
+              <td class="conj-col highlight">will</td>
+            </tr>
+            <tr>
+              <td class="pronoun-col">wir</td>
+              <td class="conj-col">können</td>
+              <td class="conj-col">wollen</td>
+            </tr>
+            <tr>
+              <td class="pronoun-col">ihr</td>
+              <td class="conj-col">könnt</td>
+              <td class="conj-col">wollt</td>
+            </tr>
+            <tr>
+              <td class="pronoun-col">sie/Sie</td>
+              <td class="conj-col">können</td>
+              <td class="conj-col">wollen</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:10px">⚠️ ich 和 er/sie/es 的形式<strong
+          style="color:var(--yellow)">完全相同</strong>，且沒有 -e / -t 字尾</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">句型結構：情態助動詞 + 動詞原形（放句尾）</div>
+      <div style="font-size:0.88rem;line-height:2;color:var(--text)">
+        Ich <span style="color:var(--accent);font-weight:700">kann</span> nur 250 Euro Miete <span
+          style="color:var(--green);font-weight:700">bezahlen</span>.<br>
+        Olga <span style="color:var(--accent);font-weight:700">will</span> eine neue Wohnung <span
+          style="color:var(--green);font-weight:700">haben</span>.<br>
+        Wann <span style="color:var(--accent);font-weight:700">kannst</span> du <span
+          style="color:var(--green);font-weight:700">kommen</span>?<br>
+        Sie <span style="color:var(--accent);font-weight:700">können</span> Kabel-TV <span
+          style="color:var(--green);font-weight:700">haben</span>.
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:12px">
+        <span style="color:var(--accent)">■</span> 情態助動詞 → 第二位 &nbsp;|&nbsp; <span style="color:var(--green)">■</span>
+        動詞原形 → 句尾
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">快速練習 — 選出正確變位</div>
+      <div id="modal-quiz"></div>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn btn-ghost" onclick="initModalQuiz()">↺ 重來</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③  VOR / NACH / SEIT -->
+  <div class="section" id="sec-prep">
+    <div class="section-title">時間介系詞：vor / nach / seit</div>
+    <div class="section-sub">三個介系詞後面都接 Dativ（第三格）</div>
+
+    <div class="dativ-note">
+      📌 規則：<strong>vor / nach / seit + Dativ</strong><br>
+      dem（陽性/中性）· der（陰性）· den（複數）<br>
+      例：<em>vor dem Frühstück</em>、<em>nach dem Mittagessen</em>、<em>seit zwei Jahren</em>
+    </div>
+
+    <div class="prep-grid">
+      <div class="prep-card">
+        <div class="prep-word">vor</div>
+        <div class="prep-meaning">…之前（距今過去）</div>
+        <div class="prep-ex">
+          vor <strong>dem</strong> Frühstück<br>
+          （早餐之前）<br><br>
+          vor <strong>dem</strong> Schulfest<br>
+          （學校慶典之前）<br><br>
+          vor <strong>einer Stunde</strong><br>
+          （一小時前）
+        </div>
+      </div>
+      <div class="prep-card">
+        <div class="prep-word">nach</div>
+        <div class="prep-meaning">…之後</div>
+        <div class="prep-ex">
+          nach <strong>dem</strong> Mittagessen<br>
+          （午餐之後）<br><br>
+          nach <strong>dem</strong> Kurs<br>
+          （課後）<br><br>
+          nach <strong>der</strong> Arbeit<br>
+          （下班後）
+        </div>
+      </div>
+      <div class="prep-card">
+        <div class="prep-word">seit</div>
+        <div class="prep-meaning">自從…（持續至今）</div>
+        <div class="prep-ex">
+          seit <strong>zwei Jahren</strong><br>
+          （兩年了）<br><br>
+          seit <strong>dem</strong> Montag<br>
+          （自星期一起）<br><br>
+          seit <strong>einer Woche</strong><br>
+          （一週了）
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">課文例句（Lektion 9）</div>
+      <div style="font-size:0.88rem;line-height:2.1;color:var(--text)">
+        Ich bin am Freitag <span style="color:var(--orange);font-weight:700">nach dem Kurs</span> ganz spontan in die
+        Hauptstadt gefahren.<br>
+        Vor <span style="color:var(--orange);font-weight:700">dem Frühstück</span> bin ich ins Schwimmbad gegangen.<br>
+        Wir haben am Samstag <span style="color:var(--orange);font-weight:700">nach dem Mittagessen</span> im
+        Kindergarten gearbeitet.<br>
+        Ich habe am Samstag Kuchen gebacken <span style="color:var(--orange);font-weight:700">vor dem
+          Schulfest</span>.<br>
+        Radshif arbeitet <span style="color:var(--orange);font-weight:700">seit zwei Jahren</span> in Köln.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">填空練習 — 點擊空格選答案</div>
+      <div id="prep-fill-quiz"></div>
+      <button class="btn btn-ghost" onclick="initPrepQuiz()" style="margin-top:10px">↺ 重來</button>
+    </div>
+  </div>
+
+  <!-- ④  PERSONALPRONOMEN -->
+  <div class="section" id="sec-pron">
+    <div class="section-title">人稱代名詞三格總覽</div>
+    <div class="section-sub">Nominativ（主格）· Akkusativ（受格）· Dativ（與格）</div>
+
+    <div class="case-legend">
+      <span><span class="case-badge badge-nom">Nom</span>動詞的主語：<em>Wer?</em></span>
+      <span><span class="case-badge badge-akk">Akk</span>直接受詞：<em>Wen?</em></span>
+      <span><span class="case-badge badge-dat">Dat</span>間接受詞：<em>Wem?</em></span>
+    </div>
+
+    <div class="pron-table-wrap">
+      <table class="pron-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>ich</th>
+            <th>du</th>
+            <th>er</th>
+            <th>es</th>
+            <th>sie</th>
+            <th>wir</th>
+            <th>ihr</th>
+            <th>sie/Sie</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="case-badge badge-nom">Nom</span></td>
+            <td class="nom">ich</td>
+            <td class="nom">du</td>
+            <td class="nom">er</td>
+            <td class="nom">es</td>
+            <td class="nom">sie</td>
+            <td class="nom">wir</td>
+            <td class="nom">ihr</td>
+            <td class="nom">sie/Sie</td>
+          </tr>
+          <tr>
+            <td><span class="case-badge badge-akk">Akk</span></td>
+            <td class="akk">mich</td>
+            <td class="akk">dich</td>
+            <td class="akk">ihn</td>
+            <td class="akk">es</td>
+            <td class="akk">sie</td>
+            <td class="akk">uns</td>
+            <td class="akk">euch</td>
+            <td class="akk">sie/Sie</td>
+          </tr>
+          <tr>
+            <td><span class="case-badge badge-dat">Dat</span></td>
+            <td class="dat">mir</td>
+            <td class="dat">dir</td>
+            <td class="dat">ihm</td>
+            <td class="dat">ihm</td>
+            <td class="dat">ihr</td>
+            <td class="dat">uns</td>
+            <td class="dat">euch</td>
+            <td class="dat">ihnen/Ihnen</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">重點記憶：改變最多的幾個</div>
+      <div style="font-size:0.88rem;line-height:2.2;">
+        <span class="nom">ich</span> → <span class="akk">mich</span> → <span class="dat">mir</span><br>
+        <span class="nom">du</span> → <span class="akk">dich</span> → <span class="dat">dir</span><br>
+        <span class="nom">er</span> → <span class="akk">ihn</span> → <span class="dat">ihm</span><br>
+        <span class="nom">wir/ihr</span> → Akk/Dat 皆為 <span class="akk">uns</span> / <span class="dat">uns</span>，<span
+          class="akk">euch</span> / <span class="dat">euch</span>（相同！）
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">例句（格的用法）</div>
+      <div style="font-size:0.85rem;line-height:2.1;color:var(--text)">
+        <span class="case-badge badge-akk">Akk</span>
+        Frau Feldmann hat <span class="akk">mich</span> auf dem Handy angerufen.<br>
+        <span class="case-badge badge-dat">Dat</span>
+        Der Lehrer hat <span class="dat">uns</span> keine Hausaufgaben gegeben.<br>
+        <span class="case-badge badge-dat">Dat</span>
+        Meine Oma hat <span class="dat">mir</span> etwas Geld gegeben.<br>
+        <span class="case-badge badge-akk">Akk</span>
+        Er hat <span class="akk">ihn</span> (= den Schlüssel) gefunden.<br>
+        <span class="case-badge badge-dat">Dat</span>
+        Das Medikament hat <span class="dat">ihm</span> sehr geholfen.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">快速測驗</div>
+      <div id="pron-quiz"></div>
+      <button class="btn btn-ghost" onclick="initPronQuiz()" style="margin-top:10px">↺ 重來</button>
+    </div>
+  </div>
+
+  <!-- ⑤ 綜合測驗 -->
+  <div class="section" id="sec-quiz">
+    <div class="section-title">綜合測驗</div>
+    <div class="section-sub">四個單元混合出題 · 共 20 題</div>
+    <div id="big-quiz"></div>
+    <div style="display:flex;justify-content:center;margin-top:16px">
+      <button class="btn btn-ghost" onclick="initBigQuiz()">↺ 重新開始</button>
+    </div>
+  </div>
+
+  <script>
+    // Section switch
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.snav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('sec-' + id).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // Toggle Konjunktionen examples
+    function toggleEx(card) {
+      const ex = card.querySelector('.konj-examples');
+      const hint = card.querySelector('.toggle-hint');
+      ex.classList.toggle('show');
+      hint.textContent = ex.classList.contains('show') ? '▲ 收起例句' : '▼ 點擊看例句';
+    }
+
+    // ── MODAL QUIZ ──
+    const MODAL_Q = [
+      { q: "___ du morgen kommen?", hint: "du + können", opts: ["kannst", "kann", "könnt", "können"], ans: "kannst" },
+      { q: "Ich ___ in vier Wochen umziehen.", hint: "ich + wollen", opts: ["will", "wollen", "willst", "wollt"], ans: "will" },
+      { q: "Wir ___ maximal 700 € bezahlen.", hint: "wir + können", opts: ["können", "kann", "könnt", "kannst"], ans: "können" },
+      { q: "Er ___ eine neue Wohnung haben.", hint: "er + wollen", opts: ["wollen", "will", "willst", "wollt"], ans: "will" },
+      { q: "Ihr ___ Kabel-TV haben.", hint: "ihr + können", opts: ["könnt", "können", "kann", "kannst"], ans: "könnt" },
+      { q: "Sie (plural) ___ nicht mehr arbeiten.", hint: "sie + wollen", opts: ["wollen", "will", "wollt", "willst"], ans: "wollen" },
+    ];
+    let mqi = 0, mqRight = 0;
+    function initModalQuiz() { mqi = 0; mqRight = 0; renderModalQ(); }
+    function renderModalQ() {
+      const c = document.getElementById('modal-quiz');
+      if (mqi >= MODAL_Q.length) {
+        c.innerHTML = `<div style="text-align:center;padding:12px;color:var(--green);font-weight:700">✅ 完成！答對 ${mqRight}/${MODAL_Q.length}</div>`;
+        return;
+      }
+      const q = MODAL_Q[mqi];
+      c.innerHTML = `
+    <div style="font-size:1rem;font-weight:600;margin-bottom:4px">${q.q}</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px">${q.hint}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="mq-opts">
+      ${q.opts.map(o => `<button class="opt" onclick="ansModal(this,'${o}','${q.ans}')">${o}</button>`).join('')}
+    </div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-top:8px">題 ${mqi + 1}/${MODAL_Q.length}</div>`;
+    }
+    function ansModal(btn, chosen, ans) {
+      document.querySelectorAll('#mq-opts .opt').forEach(b => b.disabled = true);
+      if (chosen === ans) { btn.classList.add('correct'); mqRight++; }
+      else { btn.classList.add('wrong'); document.querySelectorAll('#mq-opts .opt').forEach(b => { if (b.textContent === ans) b.classList.add('correct'); }); }
+      setTimeout(() => { mqi++; renderModalQ(); }, 900);
+    }
+    initModalQuiz();
+
+    // ── PREP FILL QUIZ ──
+    const PREP_Q = [
+      { sentence: "___ dem Frühstück bin ich ins Schwimmbad gegangen.", blank: "vor", opts: ["vor", "nach", "seit"], explain: "早餐「之前」→ vor + dem（Dativ）" },
+      { sentence: "Wir haben ___ dem Mittagessen im Kindergarten gearbeitet.", blank: "nach", opts: ["vor", "nach", "seit"], explain: "午餐「之後」→ nach + dem（Dativ）" },
+      { sentence: "Radshif arbeitet ___ zwei Jahren in Köln.", blank: "seit", opts: ["vor", "nach", "seit"], explain: "「自從」兩年前就…持續到現在→ seit + Dativ" },
+      { sentence: "Anna hat ___ dem Schulfest drei Kuchen gebacken.", blank: "vor", opts: ["vor", "nach", "seit"], explain: "學校慶典「之前」→ vor + dem（Dativ）" },
+      { sentence: "Ich bin ___ dem Kurs spontan nach München gefahren.", blank: "nach", opts: ["vor", "nach", "seit"], explain: "課「之後」→ nach + dem（Dativ）" },
+    ];
+    let pqi_state = [];
+    function initPrepQuiz() {
+      pqi_state = PREP_Q.map(() => ({ answered: false, correct: false }));
+      renderPrepQuiz();
+    }
+    function renderPrepQuiz() {
+      const c = document.getElementById('prep-fill-quiz');
+      c.innerHTML = PREP_Q.map((q, i) => {
+        const st = pqi_state[i];
+        const blankClass = st.answered ? (st.correct ? 'blank filled-correct' : 'blank filled-wrong') : 'blank';
+        const blankText = st.answered ? q.blank : '___';
+        const explainClass = 'fill-explain' + (st.answered ? ' show' : '');
+        if (st.answered) {
+          return `<div style="margin-bottom:14px">
+        <div class="fill-sentence">${q.sentence.replace('___', `<span class="${blankClass}">${blankText}</span>`)}</div>
+        <div class="${explainClass}" style="color:${st.correct ? 'var(--green)' : 'var(--red)'}">→ ${q.explain}</div>
+      </div>`;
+        }
+        return `<div style="margin-bottom:14px">
+      <div class="fill-sentence">${q.sentence.replace('___', `<span class="${blankClass}" onclick="openPrepOpts(${i})">${blankText}</span>`)}</div>
+      <div id="prep-opts-${i}" style="display:none;gap:8px;flex-wrap:wrap">
+        ${q.opts.map(o => `<button class="opt" style="min-width:80px" onclick="ansPrepFill(${i},'${o}','${q.blank}')">${o}</button>`).join('')}
+      </div>
+      <div class="${explainClass}"></div>
+    </div>`;
+      }).join('');
+    }
+    function openPrepOpts(i) {
+      const d = document.getElementById('prep-opts-' + i);
+      if (d) d.style.display = 'flex';
+    }
+    function ansPrepFill(i, chosen, ans) {
+      pqi_state[i] = { answered: true, correct: chosen === ans };
+      renderPrepQuiz();
+    }
+    initPrepQuiz();
+
+    // ── PRONOMEN QUIZ ──
+    const PRON_Q = [
+      { q: "Frau Feldmann hat ___ auf dem Handy angerufen.", hint: "ich → Akkusativ（受電話的人）", opts: ["mich", "mir", "ich", "me"], ans: "mich" },
+      { q: "Der Lehrer hat ___ keine Hausaufgaben gegeben.", hint: "wir → Dativ（給的對象）", opts: ["uns", "wir", "unser", "euch"], ans: "uns" },
+      { q: "Meine Oma hat ___ etwas Geld gegeben.", hint: "ich → Dativ（給的對象）", opts: ["mir", "mich", "ich", "mein"], ans: "mir" },
+      { q: "Das Medikament hat ___ sehr geholfen.", hint: "er → Dativ（helfen + Dativ）", opts: ["ihm", "ihn", "er", "sein"], ans: "ihm" },
+      { q: "Ich habe ___ gestern Abend angerufen.", hint: "du → Akkusativ（打電話給的人）", opts: ["dich", "dir", "du", "dein"], ans: "dich" },
+      { q: "Können Sie ___ helfen?", hint: "ich → Dativ（helfen + Dativ）", opts: ["mir", "mich", "ich", "mein"], ans: "mir" },
+    ];
+    let proni = 0, pronRight = 0;
+    function initPronQuiz() { proni = 0; pronRight = 0; renderPronQ(); }
+    function renderPronQ() {
+      const c = document.getElementById('pron-quiz');
+      if (proni >= PRON_Q.length) {
+        c.innerHTML = `<div style="text-align:center;padding:12px;color:var(--green);font-weight:700">✅ 完成！答對 ${pronRight}/${PRON_Q.length}</div>`;
+        return;
+      }
+      const q = PRON_Q[proni];
+      c.innerHTML = `
+    <div style="font-size:1rem;font-weight:600;margin-bottom:4px">${q.q}</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px">${q.hint}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="pq-opts">
+      ${q.opts.map(o => `<button class="opt" onclick="ansPron(this,'${o}','${q.ans}')">${o}</button>`).join('')}
+    </div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-top:8px">題 ${proni + 1}/${PRON_Q.length}</div>`;
+    }
+    function ansPron(btn, chosen, ans) {
+      document.querySelectorAll('#pq-opts .opt').forEach(b => b.disabled = true);
+      if (chosen === ans) { btn.classList.add('correct'); pronRight++; }
+      else { btn.classList.add('wrong'); document.querySelectorAll('#pq-opts .opt').forEach(b => { if (b.textContent === ans) b.classList.add('correct'); }); }
+      setTimeout(() => { proni++; renderPronQ(); }, 900);
+    }
+    initPronQuiz();
+
+    // ── BIG QUIZ ──
+    const ALL_Q = [
+      // Konjunktionen
+      { q: "Ich brauche eine große Wohnung, ___ ich arbeite zu Hause.", opts: ["denn", "aber", "und", "sondern"], ans: "denn", cat: "連接詞" },
+      { q: "Wir brauchen zwei Kinderzimmer, ___ 5-Zimmer-Wohnungen sind sehr teuer.", opts: ["aber", "denn", "und", "oder"], ans: "aber", cat: "連接詞" },
+      { q: "Nicht ich, ___ du musst die Rechnung bezahlen.", opts: ["sondern", "denn", "aber", "oder"], ans: "sondern", cat: "連接詞" },
+      { q: "Er wird wieder anrufen ___ Blumen schicken.", opts: ["oder", "aber", "denn", "sondern"], ans: "oder", cat: "連接詞" },
+      { q: "Er sagte, sie kommt nicht. ___ sie ist da.", opts: ["Doch", "Aber", "Und", "Denn"], ans: "Doch", cat: "連接詞" },
+      // Modal verbs
+      { q: "Wann ___ du kommen?", opts: ["kannst", "kann", "können", "könnt"], ans: "kannst", cat: "情態助動詞" },
+      { q: "Sie (sie = Silvia) ___ nicht mehr arbeiten.", opts: ["will", "wollen", "willst", "wollt"], ans: "will", cat: "情態助動詞" },
+      { q: "Wir ___ maximal 700 € bezahlen.", opts: ["können", "kann", "kannst", "könnt"], ans: "können", cat: "情態助動詞" },
+      { q: "Ich ___ eine Antenne installieren?", opts: ["kann", "kannst", "können", "könnt"], ans: "kann", cat: "情態助動詞" },
+      // Präpositionen
+      { q: "___ dem Frühstück bin ich ins Schwimmbad gegangen.", opts: ["Vor", "Nach", "Seit", "Mit"], ans: "Vor", cat: "介系詞時間" },
+      { q: "Ich bin ___ dem Kurs nach München gefahren.", opts: ["nach", "vor", "seit", "mit"], ans: "nach", cat: "介系詞時間" },
+      { q: "Radshif arbeitet ___ zwei Jahren in Köln.", opts: ["seit", "vor", "nach", "in"], ans: "seit", cat: "介系詞時間" },
+      { q: "Anna hat ___ dem Schulfest drei Kuchen gebacken.", opts: ["vor", "nach", "seit", "bei"], ans: "vor", cat: "介系詞時間" },
+      // Personalpronomen
+      { q: "Frau Feldmann hat ___ angerufen. (ich, Akk)", opts: ["mich", "mir", "ich", "mein"], ans: "mich", cat: "人稱代名詞" },
+      { q: "Der Lehrer hat ___ keine Hausaufgaben gegeben. (wir, Dat)", opts: ["uns", "wir", "unser", "euch"], ans: "uns", cat: "人稱代名詞" },
+      { q: "Meine Oma hat ___ Geld gegeben. (ich, Dat)", opts: ["mir", "mich", "ich", "mein"], ans: "mir", cat: "人稱代名詞" },
+      { q: "Das Medikament hat ___ geholfen. (er, Dat)", opts: ["ihm", "ihn", "er", "sein"], ans: "ihm", cat: "人稱代名詞" },
+      { q: "Ich habe ___ angerufen. (du, Akk)", opts: ["dich", "dir", "du", "dein"], ans: "dich", cat: "人稱代名詞" },
+      { q: "Können Sie ___ helfen? (ich, Dat)", opts: ["mir", "mich", "ich", "mein"], ans: "mir", cat: "人稱代名詞" },
+      { q: "Er hat ___ eine E-Mail geschrieben. (du, Dat)", opts: ["dir", "dich", "du", "dein"], ans: "dir", cat: "人稱代名詞" },
+    ];
+    let bqi = 0, bqRight = 0, bqDeck = [];
+    function initBigQuiz() {
+      bqDeck = [...ALL_Q].sort(() => Math.random() - 0.5).slice(0, 20);
+      bqi = 0; bqRight = 0; renderBigQ();
+    }
+    function renderBigQ() {
+      const c = document.getElementById('big-quiz');
+      if (bqi >= bqDeck.length) {
+        const pct = Math.round(bqRight / bqDeck.length * 100);
+        const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪';
+        c.innerHTML = `<div class="quiz-box" style="text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">${emoji}</div>
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:8px">測驗完成！</div>
+      <div style="color:var(--muted)">答對 <strong style="color:var(--green)">${bqRight}</strong> / ${bqDeck.length}（${pct}%）</div>
+    </div>`;
+        return;
+      }
+      const q = bqDeck[bqi];
+      const shuffled = [...q.opts].sort(() => Math.random() - 0.5);
+      c.innerHTML = `<div class="quiz-box">
+    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:8px">${q.cat} · 題 ${bqi + 1}/${bqDeck.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div style="height:12px"></div>
+    <div class="quiz-opts" id="bq-opts">
+      ${shuffled.map(o => `<button class="opt" onclick="ansBig(this,'${o}','${q.ans}')">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-nav">
+      <div class="quiz-score">✅ ${bqRight} 答對</div>
+      <button class="btn btn-primary" id="bq-next" onclick="bqi++;renderBigQ()" style="display:none">下一題 →</button>
+    </div>
+  </div>`;
+    }
+    function ansBig(btn, chosen, ans) {
+      document.querySelectorAll('#bq-opts .opt').forEach(b => b.disabled = true);
+      if (chosen === ans) { btn.classList.add('correct'); bqRight++; }
+      else { btn.classList.add('wrong'); document.querySelectorAll('#bq-opts .opt').forEach(b => { if (b.textContent === ans) b.classList.add('correct'); }); }
+      document.getElementById('bq-next').style.display = 'inline-block';
+    }
+    initBigQuiz();
+  </script>
+</body>
+
+</html>

@@ -424,6 +424,10 @@ function loadDictationQuestion(item) {
     input.spellcheck = false;
     input.addEventListener('keydown', e => {
         if (e.key !== 'Enter') return;
+        // 阻止冒泡到 document 的全域 keydown，避免同一次 Enter
+        // 在 checkDictationAnswer() 顯示 bottom-sheet 後，又被全域監聽器
+        // 誤判為「已顯示結果，按 Enter 繼續」而立刻跳到下一題
+        e.stopPropagation();
         document.getElementById('bottom-sheet').classList.contains('show')
             ? nextQuestion()
             : checkDictationAnswer();
@@ -461,7 +465,18 @@ function checkDictationAnswer() {
     const item = vocabData[currentQIndex];
     const correctAnswer = item.type === 'noun' ? `${item.art} ${item.de}` : item.de;
     const normalize = s => s.trim().replace(/\s+/g, ' ').toLowerCase();
-    const isCorrect = normalize(input.value) === normalize(correctAnswer);
+
+    // 單複數同形時，發音聽起來完全一樣（朗讀時不會念出冠詞），
+    // 兩種寫法（含冠詞 / 不含冠詞）都視為正確
+    const acceptable = new Set([normalize(correctAnswer)]);
+    if (item.type === 'noun') {
+        const pluralMatch = vocabData.find(v => v.type === 'other' && v.de.toLowerCase() === item.de.toLowerCase());
+        if (pluralMatch) acceptable.add(normalize(item.de));
+    } else {
+        const nounMatch = vocabData.find(v => v.type === 'noun' && v.de.toLowerCase() === item.de.toLowerCase());
+        if (nounMatch) acceptable.add(normalize(`${nounMatch.art} ${nounMatch.de}`));
+    }
+    const isCorrect = acceptable.has(normalize(input.value));
 
     speak(correctAnswer);
 
