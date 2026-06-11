@@ -232,6 +232,22 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
+/* Speech debug panel */
+.speech-debug {
+    background: #f7f7f7;
+    border: 2px solid var(--duo-gray);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+#speech-debug-info,
+#speech-debug-status {
+    margin-bottom: 4px;
+}
+
 /* Dictation */
 .replay-btn {
     display: flex;

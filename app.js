@@ -82,11 +82,56 @@ let cachedVoices = [];
 
 function initVoices() {
     cachedVoices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    renderSpeechDebug();
 }
 
 if (window.speechSynthesis) {
     window.speechSynthesis.addEventListener('voiceschanged', initVoices);
     initVoices();
+}
+
+// 顯示語音診斷資訊，方便排查「沒有聲音」是裝置設定還是程式問題
+function renderSpeechDebug() {
+    const info = document.getElementById('speech-debug-info');
+    if (!info) return;
+    if (!window.speechSynthesis) {
+        info.textContent = '⚠️ 此瀏覽器不支援語音合成 (SpeechSynthesis)';
+        return;
+    }
+    if (!cachedVoices.length) cachedVoices = window.speechSynthesis.getVoices();
+    const deVoices = cachedVoices.filter(v => v.lang.toLowerCase().startsWith('de'));
+    if (deVoices.length) {
+        info.textContent = `✅ 找到 ${deVoices.length} 個德語語音：${deVoices.map(v => v.name).join('、')}`;
+    } else if (cachedVoices.length) {
+        info.textContent = `⚠️ 共 ${cachedVoices.length} 個語音，但沒有德語語音，將使用系統預設發音`;
+    } else {
+        info.textContent = '⚠️ 尚未載入任何語音清單（部分瀏覽器需點擊頁面後才會載入）';
+    }
+}
+
+// 直接由按鈕點擊觸發（純使用者手勢，不經過 await），用來測試裝置是否真的會發聲
+function testSpeech() {
+    const status = document.getElementById('speech-debug-status');
+    const ss = window.speechSynthesis;
+    if (!ss) {
+        if (status) status.textContent = '❌ 此瀏覽器不支援語音合成';
+        return;
+    }
+    if (!cachedVoices.length) cachedVoices = ss.getVoices();
+    const msg = new SpeechSynthesisUtterance('Hallo, wie geht es dir?');
+    msg.lang = 'de-DE';
+    msg.rate = 0.9;
+    const germanVoice = cachedVoices.find(v => v.lang.toLowerCase().startsWith('de'));
+    if (germanVoice) msg.voice = germanVoice;
+    if (status) status.textContent = '🔊 播放中...';
+    msg.onend = () => {
+        if (status) status.textContent = '✅ 播放完成（如果沒聽到聲音，請檢查裝置音量／靜音開關）';
+    };
+    msg.onerror = (e) => {
+        if (status) status.textContent = `❌ 發生錯誤：${e.error}`;
+    };
+    ss.speak(msg);
+    renderSpeechDebug();
 }
 
 // iOS/Safari 需要在 user gesture 內先發一個空 utterance 解鎖 SpeechSynthesis
@@ -114,6 +159,7 @@ function speak(text) {
         msg.rate = 0.9;
         const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
         if (germanVoice) msg.voice = germanVoice;
+        msg.onerror = (e) => console.warn('speech error:', e.error);
         ss.speak(msg);
     };
 

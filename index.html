@@ -17,6 +17,13 @@
                 <button id="mode-quiz" class="mode-btn active" onclick="setMode('quiz')">選擇題</button>
                 <button id="mode-dictation" class="mode-btn" onclick="setMode('dictation')">🎧 聽寫</button>
             </div>
+            <div id="speech-debug" class="speech-debug">
+                <div id="speech-debug-info">檢查語音功能中...</div>
+                <button class="replay-btn" style="padding:12px; font-size:1rem; margin:8px 0 4px;"
+                    onclick="testSpeech()">🔊 測試發音（Hallo!）</button>
+                <div id="speech-debug-status"></div>
+                <small style="color:#999;">📱 iPhone 請確認側邊「靜音開關」未開啟，且媒體音量已開大</small>
+            </div>
             <p>請選擇單詞本開始練習：</p>
             <div id="vocab-list" class="vocab-list"></div>
         </div>
