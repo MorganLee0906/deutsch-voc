@@ -204,6 +204,43 @@
       font-style: italic;
     }
 
+    .speak-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter .15s, transform .1s;
+    }
+
+    .speak-btn:hover {
+      filter: brightness(1.25);
+    }
+
+    .speak-btn:active {
+      transform: scale(.92);
+    }
+
+    .speak-btn-sm {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0 2px;
+      vertical-align: middle;
+    }
+
+    .speak-btn-sm:hover {
+      filter: brightness(1.3);
+    }
+
     .hint-tap {
       font-size: 0.75rem;
       color: var(--muted);
@@ -476,12 +513,14 @@
           <div class="card-label">Infinitiv</div>
           <div class="infinitiv-text" id="fc-infinitiv">—</div>
           <div class="meaning-text" id="fc-meaning">—</div>
+          <button class="speak-btn" onclick="event.stopPropagation(); speak(deck[cardIndex].inf)">🔊</button>
           <div class="hint-tap" style="margin-top:12px">點擊翻面 →</div>
         </div>
         <div class="card-face card-back">
           <div class="card-label">Perfekt</div>
           <div class="perfekt-text" id="fc-perfekt">—</div>
           <div class="aux-badge" id="fc-badge">haben</div>
+          <button class="speak-btn" onclick="event.stopPropagation(); speakPerfekt(deck[cardIndex].perfekt)">🔊</button>
           <div class="example-card" id="fc-example">—</div>
         </div>
       </div>
@@ -504,7 +543,10 @@
     </div>
     <div class="quiz-question">
       <div class="quiz-q-label">這個動詞的 Perfekt 是？</div>
-      <div class="quiz-infinitiv" id="q-infinitiv">—</div>
+      <div class="quiz-infinitiv">
+        <span id="q-infinitiv">—</span>
+        <button class="speak-btn-sm" style="font-size:1.3rem;" onclick="speak(quizDeck[quizIndex].inf)">🔊</button>
+      </div>
       <div class="quiz-meaning" id="q-meaning">—</div>
     </div>
     <div class="quiz-options" id="quiz-options"></div>
@@ -538,6 +580,58 @@
   </div>
 
   <script>
+    // ── 語音 ──────────────────────────────────────────────────────
+    let cachedVoices = [];
+    function initVoices() {
+      cachedVoices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.addEventListener('voiceschanged', initVoices);
+      initVoices();
+    }
+
+    // iOS/Safari 需要在 user gesture 內先發一個空 utterance 解鎖 SpeechSynthesis
+    let speechUnlocked = false;
+    document.addEventListener('click', function unlockSpeech() {
+      if (speechUnlocked || !window.speechSynthesis) return;
+      speechUnlocked = true;
+      const unlock = new SpeechSynthesisUtterance('');
+      unlock.volume = 0;
+      window.speechSynthesis.speak(unlock);
+      document.removeEventListener('click', unlockSpeech);
+    }, { once: true });
+
+    function speak(text) {
+      const ss = window.speechSynthesis;
+      if (!ss) return;
+      if (!cachedVoices.length) cachedVoices = ss.getVoices();
+
+      const doSpeak = () => {
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'de-DE';
+        msg.rate = 0.9;
+        const germanVoice = cachedVoices.find(v => v.lang.startsWith('de'));
+        if (germanVoice) msg.voice = germanVoice;
+        msg.onerror = (e) => console.warn('speech error:', e.error);
+        ss.speak(msg);
+      };
+
+      if (ss.speaking || ss.pending) {
+        ss.cancel();
+        setTimeout(doSpeak, 100);
+      } else if (ss.paused) {
+        ss.resume();
+        setTimeout(doSpeak, 50);
+      } else {
+        doSpeak();
+      }
+    }
+
+    // Perfekt 形式可能是 "ist/hat gezogen"，朗讀時把 "/" 念成 "oder"
+    function speakPerfekt(text) {
+      speak(text.replace(/\//g, ' oder '));
+    }
+
     const VERBS = [
       { inf: "sein", perfekt: "ist gewesen", aux: "sein", meaning: "是，有", example: "Ich bin im Urlaub in Deutschland gewesen." },
       { inf: "haben", perfekt: "hat gehabt", aux: "haben", meaning: "擁有", example: "Wir haben gestern viel Glück gehabt." },
@@ -613,6 +707,8 @@
       const fill = ((cardIndex + 1) / deck.length * 100).toFixed(0);
       document.getElementById('progress-fill').style.width = fill + '%';
       document.getElementById('stat-progress').textContent = `${cardIndex + 1}/${deck.length}`;
+
+      speak(v.inf);
     }
 
     function flipCard() {
@@ -621,7 +717,10 @@
       card.classList.toggle('flipped', isFlipped);
       if (isFlipped) {
         seenCount++;
+        speakPerfekt(deck[cardIndex].perfekt);
         document.getElementById('feedback-row').style.display = 'flex';
+      } else {
+        speak(deck[cardIndex].inf);
       }
     }
 
@@ -662,10 +761,18 @@
     function loadQuiz() {
       if (quizIndex >= quizDeck.length) { showQuizResult(); return; }
       const v = quizDeck[quizIndex];
-      document.getElementById('q-infinitiv').textContent = v.inf;
-      document.getElementById('q-meaning').textContent = v.meaning;
+      // 重新建立題目區塊內容（showQuizResult 結束時會覆寫掉這部分，重新開始時需還原）
+      document.querySelector('.quiz-question').innerHTML = `
+      <div class="quiz-q-label">這個動詞的 Perfekt 是？</div>
+      <div class="quiz-infinitiv">
+        <span id="q-infinitiv">${v.inf}</span>
+        <button class="speak-btn-sm" style="font-size:1.3rem;" onclick="speak(quizDeck[quizIndex].inf)">🔊</button>
+      </div>
+      <div class="quiz-meaning" id="q-meaning">${v.meaning}</div>`;
       document.getElementById('quiz-progress-fill').style.width = (quizIndex / quizDeck.length * 100) + '%';
       document.getElementById('quiz-next-btn').style.display = 'none';
+
+      speak(v.inf);
 
       // Build 4 options: 1 correct + 3 random wrong
       const others = VERBS.filter(x => x.inf !== v.inf).sort(() => Math.random() - 0.5).slice(0, 3);
@@ -682,6 +789,7 @@
     }
     function answerQuiz(btn, chosen, correct) {
       document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+      speakPerfekt(correct.perfekt);
       if (chosen.inf === correct.inf) {
         btn.classList.add('correct'); quizRight++;
         document.getElementById('stat-right').textContent = rightCount + quizRight;
@@ -720,8 +828,8 @@
       });
       body.innerHTML = filtered.map(v => `
     <tr>
-      <td><strong>${v.inf}</strong></td>
-      <td class="perfekt-cell ${v.aux === 'sein' ? 'sein-color' : 'haben-color'}">${v.perfekt}</td>
+      <td><strong>${v.inf}</strong> <button class="speak-btn-sm" data-inf="${v.inf}" onclick="speak(this.dataset.inf)">🔊</button></td>
+      <td class="perfekt-cell ${v.aux === 'sein' ? 'sein-color' : 'haben-color'}">${v.perfekt} <button class="speak-btn-sm" data-perfekt="${v.perfekt}" onclick="speakPerfekt(this.dataset.perfekt)">🔊</button></td>
       <td><span class="tag-${v.aux === 'both' ? 'sein' : v.aux}">${v.aux}</span></td>
       <td class="muted-cell">${v.meaning}</td>
     </tr>`).join('');
@@ -738,9 +846,9 @@
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', ['flashcard', 'quiz', 'list'][i] === mode);
       });
-      document.getElementById('flashcard-mode').style.display = mode === 'flashcard' ? '' : 'none';
-      document.getElementById('quiz-mode').style.display = mode === 'quiz' ? '' : 'none';
-      document.getElementById('list-mode').style.display = mode === 'list' ? '' : 'none';
+      document.getElementById('flashcard-mode').style.display = mode === 'flashcard' ? 'block' : 'none';
+      document.getElementById('quiz-mode').style.display = mode === 'quiz' ? 'block' : 'none';
+      document.getElementById('list-mode').style.display = mode === 'list' ? 'block' : 'none';
       if (mode === 'quiz') startQuiz();
       if (mode === 'list') renderList();
     }
